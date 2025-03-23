@@ -1,2 +1,4 @@
 // src\index.ts
-export * from './components/Input';
+export { Input } from './components/Input';
+export { Footer } from './components/Footer';
+

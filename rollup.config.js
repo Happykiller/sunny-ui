@@ -1,3 +1,5 @@
+// rollup.config.js
+import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json' assert { type: 'json' };
 
@@ -5,8 +7,21 @@ export default {
   input: 'src/index.ts',
   output: [
     { file: pkg.main, format: 'cjs', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true }
+    { file: pkg.module, format: 'es', sourcemap: true },
   ],
-  external: [...Object.keys(pkg.peerDependencies || {})],
-  plugins: [typescript({ tsconfig: './tsconfig.json' })]
+  external: [
+    ...Object.keys(pkg.peerDependencies || {}),
+    ...Object.keys(pkg.dependencies || {}), 
+  ],
+  plugins: [
+    postcss({
+      extract: true,
+      minimize: false,
+      modules: false,
+      use: [
+        ['sass', { includePaths: ['./src', './node_modules'] }]
+      ],
+    }),
+    typescript({ tsconfig: './tsconfig.json' })
+  ]
 };
