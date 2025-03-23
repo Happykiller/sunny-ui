@@ -25,8 +25,6 @@ export interface FooterProps {
   mailto?: string;
 
   brandName?: string;
-
-  className?: string;
 }
 
 export const Footer = (props:FooterProps) => {
@@ -59,7 +57,7 @@ export const Footer = (props:FooterProps) => {
   }, [props.systemInfoUsecase]);
 
   return (
-    <div className={`footer ${props.className}`}>
+    <div className={`footer`}>
       {props.brandName}
       &nbsp;- <a href={`mailto:${props.mailto}`}>{props.mailto}</a>
       &nbsp;- <Trans>footer.version.front</Trans> {props.frontVersion}
