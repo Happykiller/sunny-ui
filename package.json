@@ -1,6 +1,6 @@
 {
   "name": "@happykiller/sunny-ui",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Library front",
   "type": "module",
   "main": "dist/index.js",
