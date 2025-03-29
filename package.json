@@ -1,6 +1,6 @@
 {
   "name": "@happykiller/sunny-ui",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Library front",
   "type": "module",
   "main": "dist/index.js",
@@ -11,20 +11,15 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "build:link": "npm run clean && npm run build && npm link",
+    "release:patch": "npm run clean && npm run build && npm version patch && npm publish"
   },
   "author": "fabrice.rosito@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.8",
-    "@mui/material": "^6.4.8",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-i18next": "^15.4.1",
     "rollup": "^4.37.0",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",

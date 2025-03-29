@@ -4,17 +4,10 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import './footer.scss';
-
-export interface SystemInfoService {
-  execute: () => Promise<{ 
-    message: string; 
-    data?: { version: string };
-    error?: string;
-  }>;
-}
+import { SystemInfoUsecase } from '../usecases/system/systemInfo.usecase';
 
 export interface FooterProps {
-  systemInfoUsecase: SystemInfoService;
+  systemInfoUsecase: any;
 
   frontVersion?: string;
 
@@ -38,7 +31,7 @@ export const Footer = (props:FooterProps) => {
     }
 
     props.systemInfoUsecase.execute()
-      .then((response) => {
+      .then((response: any) => {
         if (!isMounted) return;
         if (response.message === 'SUCCESS' && response.data) {
           setBackVersion(response.data.version);
