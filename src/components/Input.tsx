@@ -1,143 +1,129 @@
 // src\components\Input.tsx
 import React from 'react';
 import { Trans } from 'react-i18next';
-import InfoIcon from '@mui/icons-material/Info';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
+import {
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  TextFieldProps
+} from '@mui/material';
 
-export const Input = (props:any) => {
-  const [state, setState] = React.useState(props.entity??{
-    value: '',
-    valid: false
-  });
+interface InputProps extends Omit<TextFieldProps, 'onChange'> {
+  label: React.ReactNode;
+  tooltip?: React.ReactNode | string;
+  regex?: string;
+  entity: {
+    value: string;
+    valid: boolean;
+  };
+  onChange?: (entity: { value: string; valid: boolean }) => void;
+  require?: boolean;
+  virgin?: boolean;
+  icons?: {
+    visibility?: React.ReactNode;
+    visibilityOff?: React.ReactNode;
+    help?: React.ReactNode;
+  };
+}
+
+export const Input: React.FC<InputProps> = ({
+  label,
+  tooltip,
+  regex,
+  entity,
+  onChange,
+  require = false,
+  virgin: virginProp = false,
+  type = 'text',
+  icons = {},
+  ...rest
+}) => {
+  const [state, setState] = React.useState(entity);
   const [passVisible, setPassVisible] = React.useState(false);
-  const [virgin, setVirgin] = React.useState(props.virgin??false);
+  const [virgin, setVirgin] = React.useState(virginProp);
 
-  const label = <>{props.label??''}{props.require?'*':''}</>;
+  const isPassword = type === 'password';
 
-  const typeBase = (props.type??'text');
+  const fullLabel = React.useMemo(
+    () => <>{label}{require ? '*' : ''}</>,
+    [label, require]
+  );
 
-  let tooltip = null;
-  if (props.tooltip) {
-    tooltip = <InputAdornment
-      position="end"
-    >
-      <Tooltip title={props.tooltip}>
-        <IconButton><InfoIcon/></IconButton>
-      </Tooltip>
-    </InputAdornment>
-  }
-
-  const calcValid = (value:string) => {
-    let response = true;
-    if (props.require && value.length === 0) {
-      response = false;
-    } else if (props.regex && value.length !== 0) {
-      const regex = new RegExp(props.regex, 'g');
-      response = (!!value.match(regex));
+  const calcValid = (value: string): boolean => {
+    if (require && value.length === 0) return false;
+    if (regex && value.length !== 0) {
+      const reg = new RegExp(regex, 'g');
+      return reg.test(value);
     }
-
-    return response;
-  }
+    return true;
+  };
 
   const giveHelper = () => {
-    if (!virgin && props.require && !state.valid) {
-      return <Trans>common.field_incorrect</Trans>
+    if (!virgin && require && !state.valid) {
+      return <Trans>common.field_incorrect</Trans>;
     }
-
     return null;
-  }
+  };
 
-  if (props.type === 'password') {
-    return (
-      <TextField
-        label={label}
-        variant="standard"
-        size="small"
-        autoComplete='false'
-        fullWidth={props.fullWidth}
-        multiline={props.multiline}
-        rows={props.rows}
-        sx={props.sx}
-        type={(passVisible)?'text':'password'}
-        error={!virgin && !state.valid}
-        value={state.value}
-        helperText={giveHelper()}
-        onChange={(e) => { 
-          e.preventDefault();
-          setVirgin(false);
-          const isValid = calcValid(e.target.value);
-          setState({
-            value: e.target.value,
-            valid: isValid
-          });
-          if(props.onChange) {
-            props.onChange({
-              value: e.target.value,
-              valid: isValid
-            });
-          }
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment 
-              position="end"
-            >
-              <IconButton
-                onClick={(e) => { 
-                  e.preventDefault();
-                  setPassVisible(!passVisible);
-                }}
-              >
-                {(passVisible?<VisibilityOffIcon/>:<VisibilityIcon />)}
-              </IconButton>
-              {(props.tooltip)?(
-                <Tooltip title={props.tooltip}>
-                  <IconButton><InfoIcon/></IconButton>
-                </Tooltip>
-              ):null}
-            </InputAdornment>
-          ),
-        }}
-      />
-    )
-  } else {
-    return (
-      <TextField
-        label={label}
-        variant="standard"
-        size="small"
-        autoComplete='false'
-        type={typeBase}
-        fullWidth={props.fullWidth}
-        multiline={props.multiline}
-        rows={props.rows}
-        sx={props.sx}
-        error={!virgin && !state.valid}
-        value={state.value}
-        helperText={giveHelper()}
-        onChange={(e) => { 
-          e.preventDefault();
-          setVirgin(false);
-          const isValid = calcValid(e.target.value);
-          setState({
-            value: e.target.value,
-            valid: isValid
-          });
-          if(props.onChange) {
-            props.onChange({
-              value: e.target.value,
-              valid: isValid
-            });
-          }
-        }}
-        InputProps={{
-          endAdornment: (tooltip)
-        }}
-      />
-    )
-  }
+  const getTooltipTitle = () => {
+    if (typeof tooltip === 'string') return tooltip;
+    if (
+      React.isValidElement(tooltip) &&
+      (tooltip.props as { i18nKey?: string })?.i18nKey
+    ) {
+      return (tooltip.props as { i18nKey: string }).i18nKey;
+    }
+    return '';
+  };
 
-  
-}
+  const renderTooltip = () => (
+    tooltip ? (
+      <Tooltip title={getTooltipTitle()}>
+        <IconButton>{icons.help}</IconButton>
+      </Tooltip>
+    ) : null
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setVirgin(false);
+    const newValue = e.target.value;
+    const isValid = calcValid(newValue);
+    setState({ value: newValue, valid: isValid });
+    onChange?.({ value: newValue, valid: isValid });
+  };
+
+  const renderPasswordAdornment = () => (
+    <InputAdornment position="end">
+      <IconButton onClick={() => setPassVisible(prev => !prev)}>
+        {passVisible ? icons.visibilityOff : icons.visibility}
+      </IconButton>
+      {renderTooltip()}
+    </InputAdornment>
+  );
+
+  const renderTextAdornment = () => (
+    tooltip ? <InputAdornment position="end">{renderTooltip()}</InputAdornment> : undefined
+  );
+
+  return (
+    <TextField
+      {...rest}
+      label={fullLabel}
+      variant="standard"
+      size="small"
+      autoComplete="off"
+      type={isPassword && !passVisible ? 'password' : type}
+      error={!virgin && !state.valid}
+      value={state.value}
+      helperText={giveHelper()}
+      onChange={handleChange}
+      slotProps={{
+        input: {
+          endAdornment: isPassword ? renderPasswordAdornment() : renderTextAdornment(),
+        } as any,
+      }}
+    />
+  );
+};

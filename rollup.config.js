@@ -1,4 +1,5 @@
 // rollup.config.js
+import terser from '@rollup/plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json' assert { type: 'json' };
@@ -16,12 +17,19 @@ export default {
   plugins: [
     postcss({
       extract: true,
-      minimize: false,
+      minimize: {
+        preset: ['default', { discardComments: { removeAll: true } }]
+      },
       modules: false,
       use: [
         ['sass', { includePaths: ['./src', './node_modules'] }]
       ],
     }),
-    typescript({ tsconfig: './tsconfig.json' })
+    typescript({ tsconfig: './tsconfig.json' }),
+    terser({
+      format: {
+        comments: false
+      }
+    })
   ]
 };

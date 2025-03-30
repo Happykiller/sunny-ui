@@ -4,6 +4,7 @@
  */
 export { Input } from './components/Input';
 export { Footer } from './components/Footer';
+export { NotFound } from './components/pages/NotFound';
 
 /**
  * Commons

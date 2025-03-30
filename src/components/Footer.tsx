@@ -20,7 +20,7 @@ export interface FooterProps {
   brandName?: string;
 }
 
-export const Footer = (props:FooterProps) => {
+export const Footer: React.FC<FooterProps> = (props) => {
   const [backVersion, setBackVersion] = useState<string>('common.loading');
 
   useEffect(() => {
