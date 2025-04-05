@@ -89,7 +89,7 @@ The following commands cover common tasks in the package development lifecycle.
 
 ```bash
 # Install project dependencies
-npm install --legacy-peer-deps
+npm install
 
 # Log in to npm (once)
 npm login

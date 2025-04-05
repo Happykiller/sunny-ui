@@ -1,6 +1,6 @@
 {
   "name": "@happykiller/sunny-ui",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Library front",
   "type": "module",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
     "build": "rollup -c",
     "clean": "rm -rf dist",
     "build:link": "npm run clean && npm run build && npm link",
-    "release:patch": "npm run clean && npm run build && npm version patch && npm publish"
+    "release:patch": "npm run clean && npm run build && npm publish && npm version patch"
   },
   "author": "fabrice.rosito@gmail.com",
   "license": "ISC",
