@@ -40,44 +40,90 @@ npm install @happykiller/sunny-ui
 
 Make sure your project also includes:
 
-- `react`: `^18.0.0` or `^19.0.0`
-- `react-dom`: `^18.0.0` or `^19.0.0`
-- `@mui/material`: `^5.0.0` or `^6.0.0`
+- `react`: `^19.0.0`
+- `react-dom`: `^19.0.0`
+- `@mui/material`: `^6.0.0`
 - `@emotion/react`: `^11.0.0`
-- `@emotion/styled`: `^11.0.0`
+- `@emotion/styled`: `^11.0.0`,
+- `zustand`: `^5.0.0`
 
 These are listed as `peerDependencies` in the package manifest and must be installed manually.
-
----
-
-## Usage Example
-
-```tsx
-import React from 'react';
-import { Input } from '@happykiller/sunny-ui';
-
-function App() {
-  const [value, setValue] = React.useState('');
-
-  return (
-    <Input
-      label="Username"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      required
-      tooltip="Enter your username"
-    />
-  );
-}
-```
 
 ---
 
 ## Available Components
 
 - **Input**: A versatile text input field with validation, password visibility toggle, tooltip support, and full MUI integration.
+- **FlashMessage**: A global notification component based on MUI's Snackbar + Alert. Supports severity levels (`info`, `success`, `warning`, `error`) and custom close icons.
+- **Footer**: A project footer that displays front/backend versions and useful links (issues, roadmap, CGU). Requires a `systemInfoUsecase` to fetch backend version.
 
-> *More components will be added and documented as the library evolves.*
+---
+
+## Input Example
+
+```tsx
+import React from 'react';
+import { Input } from '@happykiller/sunny-ui';
+
+function App() {
+  const [username, setUsername] = React.useState({ value: '', valid: true });
+
+  return (
+    <Input
+      label="Username"
+      entity={username}
+      onChange={(next) => setUsername(next)}
+      require
+      tooltip="Enter your username"
+    />
+  );
+}
+```
+
+### FlashMessage Usage
+
+```tsx
+import { FlashMessage, useFlashStore } from '@happykiller/sunny-ui';
+import CloseIcon from '@mui/icons-material/Close';
+
+function App() {
+  const flash = useFlashStore();
+
+  return (
+    <>
+      <button onClick={() => flash.open('Saved!', 'success')}>
+        Trigger Success
+      </button>
+      <button onClick={() => flash.open('Oops!', 'error')}>
+        Trigger Error
+      </button>
+
+      <FlashMessage
+        maxVisible={4}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        icons={{ close: <CloseIcon fontSize="small" /> }}
+      />
+    </>
+  );
+}
+```
+
+### Footer Usage
+
+```tsx
+import { Footer } from '@happykiller/sunny-ui';
+
+// You'll need to pass a systemInfoUsecase with an `execute(): Promise<{ message: string; data?: { version: string } }>` method
+
+<Footer
+  brandName="MyApp"
+  mailto="support@myapp.com"
+  frontVersion="1.2.3"
+  systemInfoUsecase={systemInfoUsecase}
+  issuesUrl="https://github.com/myorg/myrepo/issues"
+  projectUrl="https://github.com/myorg/myrepo"
+/>
+```
 
 ---
 

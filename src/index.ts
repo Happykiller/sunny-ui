@@ -4,6 +4,7 @@
  */
 export { Input } from './components/Input';
 export { Footer } from './components/Footer';
+export { FlashMessage, useFlashStore } from './components/FlashMessage';
 export { NotFound } from './components/pages/NotFound';
 
 /**
