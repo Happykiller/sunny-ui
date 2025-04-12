@@ -2,6 +2,7 @@
 /**
  * Components
  */
+export { Guard } from './components/Guard';
 export { Input } from './components/Input';
 export { Footer } from './components/Footer';
 export { FlashMessage, useFlashStore } from './components/FlashMessage';
