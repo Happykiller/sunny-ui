@@ -1,6 +1,6 @@
 # Sunny UI
 
-**Version:** 1.0.1  
+**Version:** 1.3.0  
 **Package:** [`@happykiller/sunny-ui`](https://www.npmjs.com/package/@happykiller/sunny-ui)
 
 Sunny UI is an open-source library of reusable React components and TypeScript utilities designed to accelerate UI development across multiple front-end projects. It offers consistency, customization, and full integration with the Material UI (MUI) design system.
@@ -51,15 +51,8 @@ These are listed as `peerDependencies` in the package manifest and must be insta
 
 ---
 
-## Available Components
-
-- **Input**: A versatile text input field with validation, password visibility toggle, tooltip support, and full MUI integration.
-- **FlashMessage**: A global notification component based on MUI's Snackbar + Alert. Supports severity levels (`info`, `success`, `warning`, `error`) and custom close icons.
-- **Footer**: A project footer that displays front/backend versions and useful links (issues, roadmap, CGU). Requires a `systemInfoUsecase` to fetch backend version.
-
----
-
-## Input Example
+## Input Usage
+* A versatile text input field with validation, password visibility toggle, tooltip support, and full MUI integration.
 
 ```tsx
 import React from 'react';
@@ -81,6 +74,7 @@ function App() {
 ```
 
 ### FlashMessage Usage
+* A global notification component based on MUI's Snackbar + Alert. Supports severity levels (`info`, `success`, `warning`, `error`) and custom close icons.
 
 ```tsx
 import { FlashMessage, useFlashStore } from '@happykiller/sunny-ui';
@@ -109,6 +103,7 @@ function App() {
 ```
 
 ### Footer Usage
+*  A project footer that displays front/backend versions and useful links (issues, roadmap, CGU). Requires a `systemInfoUsecase` to fetch backend version.
 
 ```tsx
 import { Footer } from '@happykiller/sunny-ui';
@@ -124,6 +119,40 @@ import { Footer } from '@happykiller/sunny-ui';
   projectUrl="https://github.com/myorg/myrepo"
 />
 ```
+
+### Header Usage
+* A responsive, customizable top navigation bar with multilingual support, Zustand store injection, and Material UI integration.
+
+```tsx
+import { Header } from '@happykiller/sunny-ui';
+import MenuIcon from '@mui/icons-material/Menu';
+import { contextStore, volatileStore } from '@/stores';
+
+<Header
+  contextStore={contextStore()}
+  volatileStore={volatileStore()}
+  brandName="Vergo"
+  routes={['trainings', 'exercices', 'workouts', 'info']}
+  settings={['profile', 'logout']}
+  icons={{ menu: <MenuIcon /> }}
+  onLogout={() => console.log('logout')}
+/>
+```
+
+#### 🔧 Props
+
+| Name            | Type                                       | Default                             | Description                                        |
+|-----------------|--------------------------------------------|-------------------------------------|----------------------------------------------------|
+| `brandName`     | `string`                                   | `"Vergo"`                           | Title text linking to `/`                          |
+| `routes`        | `string[]`                                 | `['trainings', 'exercices', ...]`   | Navigation items rendered as buttons               |
+| `settings`      | `string[]`                                 | `['profile', 'logout']`             | Items in avatar dropdown                           |
+| `onLogout`      | `() => void`                               | –                                   | Called before navigation to `/login`               |
+| `icons.menu`    | `React.ReactNode`                          | –                                   | Icon for mobile menu (e.g. `<MenuIcon />`)         |
+| `sx`            | `SxProps<Theme>` (MUI `sx` prop)           | `{ backgroundColor: '#3C4042' }`    | Custom style overrides                             |
+| `contextStore`  | `{ code?: string \| null; reset?: () => void }` | **(required)**                 | Zustand store injection (user info + reset)        |
+| `volatileStore` | `{ fullscreen?: boolean }`                 | `undefined`                         | If `fullscreen === true`, the header is hidden     |
+
+📌 All labels must be defined in your i18n files under the `header.*` namespace.
 
 ---
 

@@ -5,6 +5,7 @@
 export { Guard } from './components/Guard';
 export { Input } from './components/Input';
 export { Footer } from './components/Footer';
+export { Header } from './components/Header';
 export { FlashMessage, useFlashStore } from './components/FlashMessage';
 export { NotFound } from './components/pages/NotFound';
 
