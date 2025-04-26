@@ -17,8 +17,9 @@ export interface LoginPageProps {
       execute: (params: any) => Promise<any>;
     };
     loggerService: {
-      debug: (msg: any) => void;
-      error: (msg: any) => void;
+      log(...args: any[]): void;
+      debug(...args: any[]): void;
+      error(...args: any[]): void;
     };
   };
   contextStore: {

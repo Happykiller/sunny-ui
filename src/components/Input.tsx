@@ -1,4 +1,3 @@
-// src\components\Input.tsx
 import React from 'react';
 import { Trans } from 'react-i18next';
 import {
@@ -6,7 +5,9 @@ import {
   InputAdornment,
   TextField,
   Tooltip,
-  TextFieldProps
+  TextFieldProps,
+  Box,
+  Fade
 } from '@mui/material';
 
 interface InputProps extends Omit<TextFieldProps, 'onChange'> {
@@ -66,27 +67,7 @@ export const Input: React.FC<InputProps> = ({
     return null;
   };
 
-  const getTooltipTitle = () => {
-    if (typeof tooltip === 'string') return tooltip;
-    if (
-      React.isValidElement(tooltip) &&
-      (tooltip.props as { i18nKey?: string })?.i18nKey
-    ) {
-      return (tooltip.props as { i18nKey: string }).i18nKey;
-    }
-    return '';
-  };
-
-  const renderTooltip = () => (
-    tooltip ? (
-      <Tooltip title={getTooltipTitle()}>
-        <IconButton>{icons.help}</IconButton>
-      </Tooltip>
-    ) : null
-  );
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     setVirgin(false);
     const newValue = e.target.value;
     const isValid = calcValid(newValue);
@@ -94,17 +75,31 @@ export const Input: React.FC<InputProps> = ({
     onChange?.({ value: newValue, valid: isValid });
   };
 
-  const renderPasswordAdornment = () => (
+  const renderEndAdornment = () => (
     <InputAdornment position="end">
-      <IconButton onClick={() => setPassVisible(prev => !prev)}>
-        {passVisible ? icons.visibilityOff : icons.visibility}
-      </IconButton>
-      {renderTooltip()}
+      <Box display="flex" alignItems="center" gap={0.5}>
+        {isPassword && (
+          <IconButton
+            onClick={() => setPassVisible(prev => !prev)}
+            edge="end"
+            size="small"
+          >
+            {passVisible ? icons.visibilityOff : icons.visibility}
+          </IconButton>
+        )}
+        {tooltip && (
+          <Tooltip
+            title={tooltip}
+            TransitionComponent={Fade}
+            TransitionProps={{ timeout: 300 }}
+          >
+            <IconButton edge="end" size="small">
+              {icons.help}
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
     </InputAdornment>
-  );
-
-  const renderTextAdornment = () => (
-    tooltip ? <InputAdornment position="end">{renderTooltip()}</InputAdornment> : undefined
   );
 
   return (
@@ -114,15 +109,13 @@ export const Input: React.FC<InputProps> = ({
       variant="standard"
       size="small"
       autoComplete="off"
-      type={isPassword && !passVisible ? 'password' : type}
+      type={isPassword ? (passVisible ? 'text' : 'password') : type}
       error={!virgin && !state.valid}
       value={state.value}
       helperText={giveHelper()}
       onChange={handleChange}
-      slotProps={{
-        input: {
-          endAdornment: isPassword ? renderPasswordAdornment() : renderTextAdornment(),
-        } as any,
+      InputProps={{
+        endAdornment: renderEndAdornment(),
       }}
     />
   );

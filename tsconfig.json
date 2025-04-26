@@ -11,7 +11,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "@commons/*": ["src/commons/*"],
+      "@usecases/*": ["src/usecases/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/components/pages/*"],
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

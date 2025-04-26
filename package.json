@@ -13,7 +13,9 @@
     "build": "rollup -c",
     "clean": "rm -rf dist",
     "build:link": "npm run clean && npm run build && npm link",
-    "release:patch": "npm run clean && npm run build && npm publish && npm version patch"
+    "release:patch": "npm run clean && npm run build && npm version patch && npm publish --access public",
+    "release:minor": "npm run clean && npm run build && npm version minor && npm publish --access public",
+    "release:major": "npm run clean && npm run build && npm version major && npm publish --access public"
   },
   "author": "fabrice.rosito@gmail.com",
   "license": "ISC",
@@ -21,6 +23,9 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.9",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^22.13.14",
     "@types/react": "^19.0.12",
@@ -32,6 +37,7 @@
     "react-router-dom": "^7.4.1",
     "rollup": "^4.38.0",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-tsconfig-paths": "^1.5.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "sass": "^1.86.0",
     "typescript": "^5.8.2",
@@ -41,13 +47,12 @@
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@mui/material": "^6.0.0",
+    "@passwordless-id/webauthn": "^2.3.0",
+    "framer-motion": "^12.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^15.0.0",
     "react-router-dom": "^7.0.0",
     "zustand": "^5.0.0"
-  },
-  "dependencies": {
-    "framer-motion": "^12.9.2"
   }
 }

@@ -1,14 +1,15 @@
-// src/components/pages/Login.tsx
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { client } from '@passwordless-id/webauthn';
 import { Trans, useTranslation } from 'react-i18next';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { AuthenticationJSON, AuthenticateOptions } from '@passwordless-id/webauthn/dist/esm/types';
 
-import { Input } from '../../components/Input';
+import '@pages/login.scss';
+import { Input } from '@components/Input';
 import type { LoginPageProps } from './Login.types';
-import { useFlashStore } from '../../components/FlashMessage';
-
-import './login.scss';
+import { useFlashStore } from '@components/FlashMessage';
 
 export const Login: React.FC<LoginPageProps> = ({
   icons,
@@ -27,16 +28,22 @@ export const Login: React.FC<LoginPageProps> = ({
     password: { value: '', valid: false },
   });
 
-  const [passkey, setPasskey] = React.useState({
+  const [passkey] = React.useState({
     user_code: '',
     display: '',
     challenge: '',
     credential_id: '',
   });
 
-  // -- Login form submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const altKeyPressed = (e as unknown as MouseEvent).altKey;
+    if (altKeyPressed) {
+      console.debug('🛠️ Debug mode - Form Data:', formEntities, passkey);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -66,15 +73,27 @@ export const Login: React.FC<LoginPageProps> = ({
     }
   };
 
-  // -- Passkey login
   const handlePasskeyLogin = async () => {
     try {
       setLoading(true);
-      services.loggerService.debug('Starting passkey authentication');
+      services.loggerService.debug('Starting passkey authentication', passkey);
 
-      // Ici tu dois passer la logique réelle (c'est un squelette pour intégrer avec @passwordless-id/webauthn)
+      const options: AuthenticateOptions = {
+        challenge: passkey.challenge ?? '',
+        timeout: 60000,
+        ...(passkey.credential_id && {
+          allowCredentials: [{ id: passkey.credential_id, transports: ['internal'] }],
+        }),
+      };
+
+      const authentication: AuthenticationJSON = await client.authenticate(options);
+
+      if (!authentication) {
+        throw new Error('authentication_failed');
+      }
+
       const session = await services.authPasskeyUsecase.execute({
-        authentication: {}, // <-- Remplacer par ton flow réel
+        authentication,
         user_code: passkey.user_code,
       });
 
@@ -99,81 +118,90 @@ export const Login: React.FC<LoginPageProps> = ({
     }
   };
 
+
   return (
     <Box className="login">
-      <Typography variant="h4" mb={4}>
-        <Trans>login.title</Trans>
-      </Typography>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Typography variant="h4" mb={4}>
+          <Trans>login.title</Trans>
+        </Typography>
 
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <form onSubmit={handleSubmit} className="login-form">
-          <Input
-            label={<Trans>login.login</Trans>}
-            tooltip={<Trans>REGEX.LOGIN</Trans>}
-            regex="^[a-zA-Z0-9._-]{3,}$"
-            entity={formEntities.login}
-            onChange={(entity: any) =>
-              setFormEntities((prev) => ({ ...prev, login: entity }))
-            }
-            icons={{
-              visibility: icons.visibility,
-              visibilityOff: icons.visibilityOff,
-              help: icons.help,
-            }}
-            require
-            virgin
-          />
-
-          <Input
-            label={<Trans>login.password</Trans>}
-            tooltip={<Trans>REGEX.PASSWORD</Trans>}
-            regex=".{6,}"
-            type="password"
-            entity={formEntities.password}
-            onChange={(entity: any) =>
-              setFormEntities((prev) => ({ ...prev, password: entity }))
-            }
-            icons={{
-              visibility: icons.visibility,
-              visibilityOff: icons.visibilityOff,
-              help: icons.help,
-            }}
-            require
-            virgin
-          />
-
-          {error && (
-            <Typography color="error" mt={2}>
-              <Trans>login.{error}</Trans>
-            </Typography>
-          )}
-
-          <Box display="flex" flexDirection="column" gap={2} mt={4}>
-            <Button
-              type="submit"
-              variant="contained"
-              startIcon={icons.done}
-              disabled={!(formEntities.login.valid && formEntities.password.valid)}
-            >
-              <Trans>common.done</Trans>
-            </Button>
-
-            <Button
-              variant="outlined"
-              startIcon={icons.key}
-              disabled={!passkey.user_code}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePasskeyLogin();
-              }}
-            >
-              <Trans>login.passkey</Trans>
-            </Button>
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress size={50} />
           </Box>
-        </form>
-      )}
+        ) : (
+          <form onSubmit={handleSubmit} className="login-form">
+            <Input
+              label={<Trans>login.login</Trans>}
+              tooltip={<Trans>REGEX.LOGIN</Trans>}
+              regex="^[a-zA-Z0-9._-]{3,}$"
+              entity={formEntities.login}
+              onChange={(entity: any) =>
+                setFormEntities((prev) => ({ ...prev, login: entity }))
+              }
+              icons={{
+                visibility: icons.visibility,
+                visibilityOff: icons.visibilityOff,
+                help: icons.help,
+              }}
+              require
+              virgin
+            />
+
+            <Input
+              label={<Trans>login.password</Trans>}
+              tooltip={<Trans>REGEX.PASSWORD</Trans>}
+              regex=".{6,}"
+              type="password"
+              entity={formEntities.password}
+              onChange={(entity: any) =>
+                setFormEntities((prev) => ({ ...prev, password: entity }))
+              }
+              icons={{
+                visibility: icons.visibility,
+                visibilityOff: icons.visibilityOff,
+                help: icons.help,
+              }}
+              require
+              virgin
+            />
+
+            {error && (
+              <Typography color="error" mt={2}>
+                <Trans>login.{error}</Trans>
+              </Typography>
+            )}
+
+            <Box display="flex" flexDirection="column" gap={2} mt={4}>
+              <Button
+                type="submit"
+                variant="contained"
+                startIcon={icons.done}
+                disabled={!(formEntities.login.valid && formEntities.password.valid)}
+              >
+                <Trans>common.done</Trans>
+              </Button>
+
+              <Button
+                variant="outlined"
+                startIcon={icons.key}
+                disabled={!passkey.user_code}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePasskeyLogin();
+                }}
+              >
+                <Trans>login.passkey</Trans>
+              </Button>
+            </Box>
+          </form>
+        )}
+      </motion.div>
     </Box>
   );
 };
