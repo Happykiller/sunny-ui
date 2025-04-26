@@ -46,5 +46,8 @@
     "react-i18next": "^15.0.0",
     "react-router-dom": "^7.0.0",
     "zustand": "^5.0.0"
+  },
+  "dependencies": {
+    "framer-motion": "^12.9.2"
   }
 }
