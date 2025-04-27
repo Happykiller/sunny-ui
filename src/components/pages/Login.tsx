@@ -16,11 +16,12 @@ export const Login: React.FC<LoginPageProps> = ({
   icons,
   services,
   contextStore,
+  passkeyStore
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const flash = useFlashStore();
-
+  const passkeyStored = passkeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -29,19 +30,12 @@ export const Login: React.FC<LoginPageProps> = ({
     password: { value: '', valid: false },
   });
 
-  const [passkey] = React.useState({
-    user_code: '',
-    display: '',
-    challenge: '',
-    credential_id: '',
-  });
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const altKeyPressed = (e as unknown as MouseEvent).altKey;
     if (altKeyPressed) {
-      console.debug('🛠️ Debug mode - Form Data:', formEntities, passkey);
+      console.debug('🛠️ Debug mode - Form Data:', formEntities, passkeyStored);
       return;
     }
 
@@ -77,13 +71,13 @@ export const Login: React.FC<LoginPageProps> = ({
   const handlePasskeyLogin = async () => {
     try {
       setLoading(true);
-      services.loggerService.debug('Starting passkey authentication', passkey);
+      services.loggerService.debug('Starting passkey authentication', passkeyStored);
 
       const options: AuthenticateOptions = {
-        challenge: passkey.challenge ?? '',
+        challenge: passkeyStored.challenge ?? '',
         timeout: 60000,
-        ...(passkey.credential_id && {
-          allowCredentials: [{ id: passkey.credential_id, transports: ['internal'] }],
+        ...(passkeyStored.credential_id && {
+          allowCredentials: [{ id: passkeyStored.credential_id, transports: ['internal'] }],
         }),
       };
 
@@ -95,7 +89,7 @@ export const Login: React.FC<LoginPageProps> = ({
 
       const session = await services.authPasskeyUsecase.execute({
         authentication,
-        user_code: passkey.user_code,
+        user_code: passkeyStored.user_code,
       });
 
       if (session.message === 'SUCCESS' && session.data) {
@@ -191,7 +185,7 @@ export const Login: React.FC<LoginPageProps> = ({
               <Button
                 variant="outlined"
                 startIcon={icons.key}
-                disabled={!passkey.user_code}
+                disabled={!passkeyStored.user_code}
                 onClick={(e) => {
                   e.preventDefault();
                   handlePasskeyLogin();
