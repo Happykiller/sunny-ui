@@ -1,9 +1,9 @@
 # Sunny UI
 
-**Version:** 1.3.0  
 **Package:** [`@happykiller/sunny-ui`](https://www.npmjs.com/package/@happykiller/sunny-ui)
 
-Sunny UI is an open-source library of reusable React components and TypeScript utilities designed to accelerate UI development across multiple front-end projects. It offers consistency, customization, and full integration with the Material UI (MUI) design system.
+Sunny UI is an open-source front-end library providing modular, reusable React + TypeScript components, directly integrated with Material UI.  
+It is designed to accelerate your front-end development while ensuring strong UI/UX consistency.
 
 ---
 
@@ -11,9 +11,12 @@ Sunny UI is an open-source library of reusable React components and TypeScript u
 
 - [Features](#features)
 - [Installation](#installation)
-- [Usage Example](#usage-example)
+- [Quick Usage Example](#quick-usage-example)
+- [Code Examples](#code-examples)
+- [Core Concepts (Stores, Layout)](#core-concepts-stores-layout)
 - [Available Components](#available-components)
-- [Development Workflow](#development-workflow)
+- [Available Hooks](#available-hooks)
+- [Development & Publishing](#development--publishing)
 - [Contributing](#contributing)
 - [License](#license)
 - [About](#about)
@@ -24,9 +27,10 @@ Sunny UI is an open-source library of reusable React components and TypeScript u
 
 ✅ Reusable and customizable React components  
 🎨 Native integration with [Material UI (MUI)](https://mui.com/)  
-🔒 Strong typing with TypeScript  
-📦 Optimized build with CommonJS + ESModule outputs  
-🧪 Ready to integrate with tests, Storybook, or documentation tools
+🔒 Strict TypeScript typing + runtime validation  
+🚀 Automatic management of Flash Messages and Passkeys  
+🛡️ Secure Layout with session authentication (`Guard` included)  
+📦 Optimized build for CJS + ESM + Typings
 
 ---
 
@@ -38,170 +42,220 @@ npm install @happykiller/sunny-ui
 
 ### Peer Dependencies
 
-Make sure your project also includes:
+You must manually install:
 
-- `react`: `^19.0.0`
-- `react-dom`: `^19.0.0`
-- `@mui/material`: `^6.0.0`
-- `@emotion/react`: `^11.0.0`
-- `@emotion/styled`: `^11.0.0`,
-- `zustand`: `^5.0.0`
-
-These are listed as `peerDependencies` in the package manifest and must be installed manually.
+- `react@^19.0.0`
+- `react-dom@^19.0.0`
+- `@mui/material@^6.0.0`
+- `zustand@^5.0.0`
+- `@emotion/react@^11.0.0`
+- `@emotion/styled@^11.0.0`
+- `@passwordless-id/webauthn@^2.3.0`
+- `framer-motion@^12.0.0`
 
 ---
 
-## Input Usage
-* A versatile text input field with validation, password visibility toggle, tooltip support, and full MUI integration.
+## Quick Usage Example
+
+**Secure Layout + Header + Footer**
 
 ```tsx
-import React from 'react';
-import { Input } from '@happykiller/sunny-ui';
+import { LayoutProtected, Footer, FlashMessage } from '@happykiller/sunny-ui';
 
 function App() {
-  const [username, setUsername] = React.useState({ value: '', valid: true });
-
-  return (
-    <Input
-      label="Username"
-      entity={username}
-      onChange={(next) => setUsername(next)}
-      require
-      tooltip="Enter your username"
-    />
-  );
-}
-```
-
-### FlashMessage Usage
-* A global notification component based on MUI's Snackbar + Alert. Supports severity levels (`info`, `success`, `warning`, `error`) and custom close icons.
-
-```tsx
-import { FlashMessage, useFlashStore } from '@happykiller/sunny-ui';
-import CloseIcon from '@mui/icons-material/Close';
-
-function App() {
-  const flash = useFlashStore();
-
   return (
     <>
-      <button onClick={() => flash.open('Saved!', 'success')}>
-        Trigger Success
-      </button>
-      <button onClick={() => flash.open('Oops!', 'error')}>
-        Trigger Error
-      </button>
+      <LayoutProtected
+        header={<MyCustomHeader />}
+        sessionInfoUsecase={sessionInfoUsecase}
+        loggerService={loggerService}
+        contextStore={contextStore}
+      >
+        {/* Your app content here */}
+      </LayoutProtected>
 
-      <FlashMessage
-        maxVisible={4}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        icons={{ close: <CloseIcon fontSize="small" /> }}
+      <Footer
+        systemInfoUsecase={systemInfoUsecase}
+        frontVersion="1.4.0"
+        brandName="MyApp"
+        issuesUrl="https://github.com/myorg/myrepo/issues"
+        projectUrl="https://github.com/myorg/myrepo"
       />
+
+      <FlashMessage />
     </>
   );
 }
 ```
 
-### Footer Usage
-*  A project footer that displays front/backend versions and useful links (issues, roadmap, CGU). Requires a `systemInfoUsecase` to fetch backend version.
+## Code Examples
+
+### 🔥 Input Component Example
 
 ```tsx
-import { Footer } from '@happykiller/sunny-ui';
+import React from 'react';
+import { Input } from '@happykiller/sunny-ui';
 
-// You'll need to pass a systemInfoUsecase with an `execute(): Promise<{ message: string; data?: { version: string } }>` method
+function UsernameInput() {
+  const [username, setUsername] = React.useState({ value: '', valid: false });
 
-<Footer
-  brandName="MyApp"
-  mailto="support@myapp.com"
-  frontVersion="1.2.3"
-  systemInfoUsecase={systemInfoUsecase}
-  issuesUrl="https://github.com/myorg/myrepo/issues"
-  projectUrl="https://github.com/myorg/myrepo"
-/>
+  return (
+    <Input
+      label="Username"
+      tooltip="Username must be at least 3 characters."
+      regex="^[a-zA-Z0-9._-]{3,}$"
+      entity={username}
+      onChange={(newEntity) => setUsername(newEntity)}
+      require
+      virgin
+    />
+  );
+}
+
+export default UsernameInput;
 ```
 
-### Header Usage
-* A responsive, customizable top navigation bar with multilingual support, Zustand store injection, and Material UI integration.
-
-```tsx
-import { Header } from '@happykiller/sunny-ui';
-import MenuIcon from '@mui/icons-material/Menu';
-import { contextStore, volatileStore } from '@/stores';
-
-<Header
-  contextStore={contextStore()}
-  volatileStore={volatileStore()}
-  brandName="Vergo"
-  routes={['trainings', 'exercices', 'workouts', 'info']}
-  settings={['profile', 'logout']}
-  icons={{ menu: <MenuIcon /> }}
-  onLogout={() => console.log('logout')}
-/>
-```
-
-#### 🔧 Props
-
-| Name            | Type                                       | Default                             | Description                                        |
-|-----------------|--------------------------------------------|-------------------------------------|----------------------------------------------------|
-| `brandName`     | `string`                                   | `"Vergo"`                           | Title text linking to `/`                          |
-| `routes`        | `string[]`                                 | `['trainings', 'exercices', ...]`   | Navigation items rendered as buttons               |
-| `settings`      | `string[]`                                 | `['profile', 'logout']`             | Items in avatar dropdown                           |
-| `onLogout`      | `() => void`                               | –                                   | Called before navigation to `/login`               |
-| `icons.menu`    | `React.ReactNode`                          | –                                   | Icon for mobile menu (e.g. `<MenuIcon />`)         |
-| `sx`            | `SxProps<Theme>` (MUI `sx` prop)           | `{ backgroundColor: '#3C4042' }`    | Custom style overrides                             |
-| `contextStore`  | `{ code?: string \| null; reset?: () => void }` | **(required)**                 | Zustand store injection (user info + reset)        |
-| `volatileStore` | `{ fullscreen?: boolean }`                 | `undefined`                         | If `fullscreen === true`, the header is hidden     |
-
-📌 All labels must be defined in your i18n files under the `header.*` namespace.
+✅ Features:
+- Live validation based on regex
+- Tooltip display
+- MUI error helper if invalid
+- Two-way controlled state `{ value, valid }`
+- Optional required flag (`require`)
 
 ---
 
-## Development Workflow
+### ⚡ FlashMessage Example
 
-The following commands cover common tasks in the package development lifecycle.
+```tsx
+import React from 'react';
+import { FlashMessage, useFlashStore } from '@happykiller/sunny-ui';
+import { Button } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
-### 1. Setup
+function FlashExample() {
+  const flash = useFlashStore();
+
+  return (
+    <>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={() => flash.open('Saved successfully!', 'success')}
+      >
+        Show Success
+      </Button>
+
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => flash.open('An error occurred.', 'error')}
+      >
+        Show Error
+      </Button>
+
+      <FlashMessage
+        icons={{ close: <CloseIcon fontSize="small" /> }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      />
+    </>
+  );
+}
+
+export default FlashExample;
+```
+
+✅ Features:
+- Easy message dispatch `flash.open(message, severity?)`
+- Severity levels (`info`, `success`, `warning`, `error`)
+- MUI Alert with custom close button
+- Multiple visible flash messages stacked
+
+---
+
+## Core Concepts
+
+### LayoutProtected
+
+- Automatically checks the user's session (via injected usecase)
+- Redirects to `/login` if session is invalid
+- Dynamically injects a customizable `Header`
+- Integrates a Material UI `Container`
+
+```tsx
+import { LayoutProtected } from '@happykiller/sunny-ui';
+```
+
+| Prop                | Type            | Description                          |
+|:--------------------|:----------------|:-------------------------------------|
+| `header`             | `ReactNode`     | The header component to render       |
+| `sessionInfoUsecase` | `Usecase`        | Usecase to validate session          |
+| `loggerService`      | `Service`        | Logger service for session errors    |
+| `contextStore`       | `Zustand store`  | User context store                   |
+
+---
+
+### Built-in Global Stores
+
+Sunny UI directly provides:
+
+- `useFlashStore()` → To trigger global flash messages (`success`, `error`, etc.)
+- `usePasskeyStore()` → To persist WebAuthn passkeys locally
+
+✅ **No need to inject them manually**  
+✅ **Fully persisted via `localStorage`**
+
+---
+
+## Available Components
+
+| Component         | Description                               |
+|:------------------|:------------------------------------------|
+| `Guard`           | Route protection with session checking   |
+| `Input`           | Flexible input field with validation, tooltip, password toggle |
+| `Footer`          | Versioned footer + useful links           |
+| `Header`          | Fully responsive top navigation bar      |
+| `FlashMessage`    | Global notifications (info, success, error, warning) |
+| `LayoutProtected` | Full secure page layout                   |
+
+---
+
+## Available Pages
+
+| Page            | Description                                |
+|:----------------|:-------------------------------------------|
+| `Login`         | Standard authentication + WebAuthn passkey support |
+| `Profile`       | User account management + password update + passkeys |
+| `CGU`           | Terms and Conditions (CGU) page            |
+| `NotFound`      | Customizable 404 page                      |
+
+---
+
+## Available Hooks
+
+| Hook               | Description                      |
+|:-------------------|:----------------------------------|
+| `useFlashStore()`   | Global flash message management   |
+| `usePasskeyStore()` | Local passkey storage management  |
+
+---
+
+## Development & Publishing
 
 ```bash
-# Install project dependencies
+# Install dependencies
 npm install
 
-# Log in to npm (once)
-npm login
-```
-
----
-
-### 2. Develop
-
-Work inside the `src/` folder (`components`, `services`, etc.). The project is TypeScript-ready with strict mode enabled. Consider integrating tools like Storybook or Vitest if needed.
-
----
-
-### 3. Build & Clean
-
-```bash
 # Clean previous builds
 npm run clean
 
-# Build the package (uses Rollup + TypeScript)
+# Build the package
 npm run build
-```
 
-This produces output in `dist/`, including `.js`, `.es.js`, and `.d.ts` files.
-
----
-
-### 4. Publish
-
-Once you’ve bumped the version number (`package.json`) and committed your changes:
-
-```bash
-# Publish to npm
+# Publish (after bumping version)
 npm publish
 ```
 
-📌 **Reminder:** Follow [Semantic Versioning](https://semver.org/) when updating the version.
+🔖 Follow [Semantic Versioning](https://semver.org/) when updating package versions.
 
 ---
 
@@ -209,23 +263,21 @@ npm publish
 
 We welcome contributions!
 
-1. Fork this repository
+1. Fork the repository
 2. Create a new branch: `git checkout -b feat/my-feature`
-3. Make your changes and commit: `git commit -m "Add my feature"`
+3. Commit your changes: `git commit -m "Add my feature"`
 4. Push your branch: `git push origin feat/my-feature`
-5. Open a pull request
-
-Please refer to `CONTRIBUTING.md` for guidelines and best practices.
+5. Open a Pull Request 🚀
 
 ---
 
 ## License
 
-Sunny UI is licensed under the **ISC License**. See the [LICENSE](./LICENSE) file for details.
+Sunny UI is licensed under the **ISC License**.
 
 ---
 
 ## About
 
-This project was initiated by [Fabrice Rosito](mailto:fabrice.rosito@gmail.com) as a reusable, scalable front-end library for internal and open-source projects.  
-For questions, suggestions or collaborations, feel free to get in touch!
+Developed by [Fabrice Rosito](mailto:fabrice.rosito@gmail.com).  
+Goal: to provide a modern, scalable, open-source front-end library for professional React applications.

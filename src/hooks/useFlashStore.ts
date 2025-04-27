@@ -12,6 +12,10 @@ export interface FlashQueueItem {
 export interface FlashStore {
   queue: FlashQueueItem[];
   open: (msg: string, severity?: AlertColor) => void;
+  success: (msg: string) => void;
+  error: (msg: string) => void;
+  warning: (msg: string) => void;
+  info: (msg: string) => void;
   close: (id: number) => void;
 }
 
@@ -26,6 +30,10 @@ export const useFlashStore = create<FlashStore>((set, get) => ({
       queue: [...state.queue, { id, msg, severity, timeout }],
     }));
   },
+  success: (msg) => get().open(msg, 'success'),
+  error: (msg) => get().open(msg, 'error'),
+  warning: (msg) => get().open(msg, 'warning'),
+  info: (msg) => get().open(msg, 'info'),
   close: (id) => {
     const { queue } = get();
     const item = queue.find(i => i.id === id);
