@@ -8,14 +8,14 @@ import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconB
 
 import { Input } from '@components/Input';
 import { ProfilePageProps } from './Profile.types';
-import { passkeyStore } from '@stores/passkeyStore';
-import { useFlashStore } from '@components/FlashMessage';
+import { useFlashStore } from '@hooks/useFlashStore';
+import { usePasskeyStore } from '@hooks/usePasskeyStore';
 
 export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextStore }) => {
   const { t } = useTranslation();
   const context = contextStore();
   const flashStore = useFlashStore();
-  const passkeyStored = passkeyStore();
+  const passkeyStored = usePasskeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [formEntities, setFormEntities] = React.useState({ old: { value: '', valid: false }, new: { value: '', valid: false }, conf: { value: '', valid: false } });
@@ -105,7 +105,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
         /**
          * Record local storage passkey
          */
-        passkeyStore.setState({
+        usePasskeyStore.setState({
           display: passkey_display,
           passkey_id: response.data.id,
           user_code: context.code,
@@ -140,7 +140,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
   };
 
   const handleActivatePasskey = (dto: any) => {
-    passkeyStore.setState({
+    usePasskeyStore.setState({
       passkey_id: dto.id,
       user_code: dto.user_code,
       challenge: dto.challenge,

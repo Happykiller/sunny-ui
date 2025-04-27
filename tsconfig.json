@@ -14,7 +14,7 @@
     "outDir": "dist",
     "baseUrl": "./",
     "paths": {
-      "@stores/*": ["src/stores/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@commons/*": ["src/commons/*"],
       "@usecases/*": ["src/usecases/*"],
       "@components/*": ["src/components/*"],

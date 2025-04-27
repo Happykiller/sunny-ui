@@ -9,9 +9,9 @@ import { AuthenticationJSON, AuthenticateOptions } from '@passwordless-id/webaut
 
 import '@pages/login.scss';
 import { Input } from '@components/Input';
-import { passkeyStore } from '@stores/passkeyStore';
 import type { LoginPageProps } from './Login.types';
-import { useFlashStore } from '@components/FlashMessage';
+import { useFlashStore } from '@hooks/useFlashStore';
+import { usePasskeyStore } from '@hooks/usePasskeyStore';
 
 export const Login: React.FC<LoginPageProps> = ({
   icons,
@@ -21,7 +21,7 @@ export const Login: React.FC<LoginPageProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const flash = useFlashStore();
-  const passkeyStored = passkeyStore();
+  const passkeyStored = usePasskeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 

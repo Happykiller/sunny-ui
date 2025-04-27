@@ -6,8 +6,13 @@ export { Guard } from './components/Guard';
 export { Input } from './components/Input';
 export { Footer } from './components/Footer';
 export { Header } from './components/Header';
-export { LayoutProtected } from './components/LayoutProtected'
-export { FlashMessage, useFlashStore } from './components/FlashMessage';
+export { FlashMessage } from './components/FlashMessage';
+export { LayoutProtected } from './components/layout/LayoutProtected';
+
+/**
+ * Hooks
+ */
+export { useFlashStore } from './hooks/useFlashStore';
 
 /**
  * Pages

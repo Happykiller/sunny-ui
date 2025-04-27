@@ -1,44 +1,12 @@
 // src\components\FlashMessage.tsx
 import React from 'react';
-import { create } from 'zustand';
 import { useTheme } from '@mui/material/styles';
-import { Alert, AlertColor, IconButton, Stack, SnackbarOrigin, Collapse } from '@mui/material';
+import { Alert, IconButton, Stack, SnackbarOrigin, Collapse } from '@mui/material';
+import { useFlashStore } from '@hooks/useFlashStore';
 
 export interface FlashIcons {
   close?: React.ReactNode;
 }
-
-interface FlashQueueItem {
-  id: number;
-  msg: string;
-  severity: AlertColor;
-  timeout?: NodeJS.Timeout;
-}
-
-interface FlashState {
-  queue: FlashQueueItem[];
-  open: (msg: string, severity?: AlertColor) => void;
-  close: (id: number) => void;
-}
-
-let idCounter = 0;
-
-export const useFlashStore = create<FlashState>((set, get) => ({
-  queue: [],
-  open: (msg, severity = 'info') => {
-    const id = ++idCounter;
-    const timeout = setTimeout(() => get().close(id), 6000);
-    set((state) => ({
-      queue: [...state.queue, { id, msg, severity, timeout }],
-    }));
-  },
-  close: (id) => {
-    const { queue } = get();
-    const item = queue.find((i) => i.id === id);
-    if (item?.timeout) clearTimeout(item.timeout);
-    set({ queue: queue.filter((item) => item.id !== id) });
-  },
-}));
 
 interface FlashMessageProps {
   icons?: FlashIcons;
