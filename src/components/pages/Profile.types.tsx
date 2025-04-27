@@ -19,6 +19,4 @@ export interface ProfilePageProps {
     loggerService: { debug(...args: any[]): void; error(...args: any[]): void; };
   };
   contextStore: any;
-  passkeyStore: any;
-  flashStore: { open: (message: string) => void };
 }

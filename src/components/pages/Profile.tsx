@@ -8,10 +8,13 @@ import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconB
 
 import { Input } from '@components/Input';
 import { ProfilePageProps } from './Profile.types';
+import { passkeyStore } from '@stores/passkeyStore';
+import { useFlashStore } from '@components/FlashMessage';
 
-export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextStore, flashStore, passkeyStore }) => {
+export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextStore }) => {
   const { t } = useTranslation();
   const context = contextStore();
+  const flashStore = useFlashStore();
   const passkeyStored = passkeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -107,8 +110,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
           passkey_id: response.data.id,
           user_code: context.code,
           challenge: challenge,
-          credential_id: registration.id,
-          label: passkeyLabel.value
+          credential_id: registration.id
         });
 
         setPasskeyLabel({ value: '', valid: false });
@@ -142,8 +144,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
       passkey_id: dto.id,
       user_code: dto.user_code,
       challenge: dto.challenge,
-      credential_id: dto.credential_id,
-      label: dto.label
+      credential_id: dto.credential_id
     });
     flashStore.open(t('profile.passkey_activated'));
   };

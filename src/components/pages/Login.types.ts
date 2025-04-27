@@ -25,5 +25,4 @@ export interface LoginPageProps {
   contextStore: {
     setState: (state: any) => void;
   };
-  passkeyStore: any;
 }

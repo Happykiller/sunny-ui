@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// src\components\FlashMessage.tsx
+import React from 'react';
 import { create } from 'zustand';
 import { useTheme } from '@mui/material/styles';
 import { Alert, AlertColor, IconButton, Stack, SnackbarOrigin, Collapse } from '@mui/material';
