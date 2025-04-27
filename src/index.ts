@@ -13,6 +13,7 @@ export { FlashMessage, useFlashStore } from './components/FlashMessage';
  */
 export { CGU } from './components/pages/CGU';
 export { Login } from './components/pages/Login';
+export { Profile } from './components/pages/Profile';
 export { NotFound } from './components/pages/NotFound';
 
 /**
