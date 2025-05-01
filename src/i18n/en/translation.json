@@ -1,0 +1,82 @@
+{
+  "CODES": {
+    "FAIL": "Error while loading data",
+    "SUCCESS": "Data loaded successfully"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "done": "Done",
+    "field_incorrect": "Incorrect field",
+    "loading": "Loading...",
+    "update": "Update"
+  },
+  "errors": {
+    "session_invalid": "Your session is invalid. Please log in again."
+  },
+  "footer": {
+    "issues": "Issues",
+    "roadmap": "Roadmap",
+    "version": {
+      "back": "Apis: ",
+      "front": "Web: "
+    }
+  },
+  "header": {
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings",
+    "open_user_menu": "Open"
+  },
+  "login": {
+    "AUTH_FAIL_WRONG_CREDENTIAL": "Incorrect credentials",
+    "login": "Enter your name",
+    "passkey": "Access keys",
+    "password": "Enter your password",
+    "title": "Authentication"
+  },
+  "not_found": {
+    "oups": "Oops! This page does not exist.",
+    "help": "The page you are looking for might have been moved or deleted.",
+    "back_home": "Back to home"
+  },
+  "profile": {
+    "addPasskey": "Add a key",
+    "code": "Identifier: ",
+    "confPassword": "Confirm password",
+    "keys": "View system keys",
+    "name_first": "First name: ",
+    "name_last": "Last name: ",
+    "newPassword": "New password",
+    "oldPassword": "Current password",
+    "settings": "Settings",
+    "volumeControl": "Volume control",
+    "add_passkey": "Add pass key",
+    "passkey_created": "Access key created successfully",
+    "passkey_deleted": "Access key deleted successfully",
+    "passkey_activated": "Access key activated",
+    "passkey_add_error": "Error while creating the access key",
+    "passkey_delete_error": "Error while deleting the access key",
+    "no_passkeys": "No access keys registered",
+    "passkey_list_error": "Error while get list",
+    "passkey": {
+      "table": {
+        "active": "Activate",
+        "delete": "Delete",
+        "label": "Name"
+      }
+    },
+    "passkey_label": "Device name",
+    "passkey_delete": "You can delete passkey: {{display}}",
+    "passkeys": "Access keys",
+    "password": "Change password",
+    "passwordUpdated": "Password update successful",
+    "title": "Profile",
+    "UPDATE_PASSWORD_FAIL": "Password change failed"
+  },
+  "REGEX": {
+    "LOGIN": "From 3 to 50, letters only",
+    "PASSKEY_LABEL": "From 3 to 50, letters only",
+    "PASSWORD": "From 3 to 50, letters and numbers with possible @$€!%*?&.-_:;,"
+  }
+}

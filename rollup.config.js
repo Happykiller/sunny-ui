@@ -5,6 +5,7 @@ import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
 import terser from '@rollup/plugin-terser';
 import pkg from './package.json' assert { type: 'json' };
+import json from '@rollup/plugin-json';
 
 export default {
   input: 'src/index.ts',
@@ -24,6 +25,7 @@ export default {
     warn(warning);
   },
   plugins: [
+    json(),
     tsconfigPaths(),
     resolve({
       extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json'],
