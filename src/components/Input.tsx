@@ -156,6 +156,7 @@ export const Input: React.FC<InputProps> = ({
         },
         input: {
           color: theme.palette.text.primary,
+          backgroundColor: 'transparent',
           py: 1.2,
         },
       }}
