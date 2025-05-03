@@ -1,3 +1,4 @@
+// src\components\Input.tsx
 import React from 'react';
 import { Trans } from 'react-i18next';
 import {
@@ -7,12 +8,13 @@ import {
   Tooltip,
   TextFieldProps,
   Box,
-  Fade
+  Fade,
+  useTheme,
 } from '@mui/material';
 
 interface InputProps extends Omit<TextFieldProps, 'onChange'> {
   label: React.ReactNode;
-  tooltip?: React.ReactNode | string;
+  tooltip?: React.ReactNode;
   regex?: string;
   entity: {
     value: string;
@@ -40,15 +42,17 @@ export const Input: React.FC<InputProps> = ({
   icons = {},
   ...rest
 }) => {
+  const theme = useTheme();
   const [state, setState] = React.useState(entity);
   const [passVisible, setPassVisible] = React.useState(false);
   const [virgin, setVirgin] = React.useState(virginProp);
-
   const isPassword = type === 'password';
 
-  const fullLabel = React.useMemo(
-    () => <>{label}{require ? '*' : ''}</>,
-    [label, require]
+  const fullLabel = (
+    <>
+      {label}
+      {require && '*'}
+    </>
   );
 
   const calcValid = (value: string): boolean => {
@@ -80,7 +84,7 @@ export const Input: React.FC<InputProps> = ({
       <Box display="flex" alignItems="center" gap={0.5}>
         {isPassword && (
           <IconButton
-            onClick={() => setPassVisible(prev => !prev)}
+            onClick={() => setPassVisible((prev) => !prev)}
             edge="end"
             size="small"
           >
@@ -105,10 +109,10 @@ export const Input: React.FC<InputProps> = ({
   return (
     <TextField
       {...rest}
-      label={fullLabel}
-      variant="standard"
-      size="small"
+      fullWidth
       autoComplete="off"
+      variant="outlined"
+      label={fullLabel}
       type={isPassword ? (passVisible ? 'text' : 'password') : type}
       error={!virgin && !state.valid}
       value={state.value}
@@ -116,6 +120,27 @@ export const Input: React.FC<InputProps> = ({
       onChange={handleChange}
       InputProps={{
         endAdornment: renderEndAdornment(),
+      }}
+      sx={{
+        '.MuiOutlinedInput-root': {
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: `${theme.shape.borderRadius}px`,
+          transition: 'all 0.2s ease-in-out',
+          fieldset: {
+            borderColor: theme.palette.primary.main,
+          },
+          '&:hover fieldset': {
+            borderColor: theme.palette.primary.light,
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: theme.palette.primary.main,
+            boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
+          },
+        },
+        input: {
+          color: theme.palette.text.primary,
+          paddingY: 1.2,
+        },
       }}
     />
   );

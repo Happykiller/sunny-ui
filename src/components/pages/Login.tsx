@@ -1,13 +1,20 @@
 // src\components\pages\Login.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { client } from '@passwordless-id/webauthn';
 import { Trans, useTranslation } from 'react-i18next';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { AuthenticationJSON, AuthenticateOptions } from '@passwordless-id/webauthn/dist/esm/types';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+  Paper,
+  Stack,
+} from '@mui/material';
 
-import '@pages/login.scss';
 import { Input } from '@components/Input';
 import type { LoginPageProps } from './Login.types';
 import { useFlashStore } from '@hooks/useFlashStore';
@@ -18,6 +25,7 @@ export const Login: React.FC<LoginPageProps> = ({
   services,
   contextStore
 }) => {
+  const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const flash = useFlashStore();
@@ -113,89 +121,154 @@ export const Login: React.FC<LoginPageProps> = ({
     }
   };
 
-
   return (
-    <Box className="login">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 4,
+        background: theme.palette.background.default,
+        backgroundImage: `
+        radial-gradient(ellipse at 50% 0%, ${theme.palette.primary.main}40 0%, transparent 70%),
+        linear-gradient(135deg, ${theme.palette.background.default} 0%, #1B1F3B 100%)
+      `,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{ width: '100%', maxWidth: 420 }}
       >
-        <Typography variant="h4" mb={4}>
-          <Trans>login.title</Trans>
-        </Typography>
-
-        {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <CircularProgress size={50} />
-          </Box>
-        ) : (
-          <form onSubmit={handleSubmit} className="login-form">
-            <Input
-              label={<Trans>login.login</Trans>}
-              tooltip={<Trans>REGEX.LOGIN</Trans>}
-              regex="^[a-zA-Z0-9._-]{3,}$"
-              entity={formEntities.login}
-              onChange={(entity: any) =>
-                setFormEntities((prev) => ({ ...prev, login: entity }))
-              }
-              icons={{
-                visibility: icons.visibility,
-                visibilityOff: icons.visibilityOff,
-                help: icons.help,
-              }}
-              require
-              virgin
-            />
-
-            <Input
-              label={<Trans>login.password</Trans>}
-              tooltip={<Trans>REGEX.PASSWORD</Trans>}
-              regex=".{6,}"
-              type="password"
-              entity={formEntities.password}
-              onChange={(entity: any) =>
-                setFormEntities((prev) => ({ ...prev, password: entity }))
-              }
-              icons={{
-                visibility: icons.visibility,
-                visibilityOff: icons.visibilityOff,
-                help: icons.help,
-              }}
-              require
-              virgin
-            />
-
-            {error && (
-              <Typography color="error" mt={2}>
-                <Trans>login.{error}</Trans>
-              </Typography>
-            )}
-
-            <Box display="flex" flexDirection="column" gap={2} mt={4}>
-              <Button
-                type="submit"
-                variant="contained"
-                startIcon={icons.done}
-                disabled={!(formEntities.login.valid && formEntities.password.valid)}
-              >
-                <Trans>common.done</Trans>
-              </Button>
-
-              <Button
-                variant="outlined"
-                startIcon={icons.key}
-                disabled={!passkeyStored.user_code}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePasskeyLogin();
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            borderRadius: `${theme.shape.borderRadius}px`,
+            backgroundColor: theme.palette.background.default,
+            boxShadow: `
+              0 0 24px ${theme.palette.primary.main}33,
+              0 0 64px ${theme.palette.primary.main}1A,
+              inset 0 0 8px rgba(255, 255, 255, 0.02)
+            `,
+            border: `1px solid ${theme.palette.primary.main}`,
+            backdropFilter: 'blur(2px)',
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Box display="flex" justifyContent="center" mb={3}>
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  border: `1px solid ${theme.palette.primary.main}`,
+                  boxShadow: `
+                    0 0 24px ${theme.palette.primary.main}33,
+                    0 0 64px ${theme.palette.primary.main}1A,
+                    inset 0 0 8px rgba(255, 255, 255, 0.02)
+                  `,
+                  backgroundColor: theme.palette.background.default,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Trans>login.passkey</Trans>
-              </Button>
+                <img
+                  src="/logo4.png"
+                  alt="Logo"
+                  style={{
+                    maxWidth: '80%',
+                    maxHeight: '80%',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </Box>
             </Box>
-          </form>
-        )}
+          </motion.div>
+
+          <Box textAlign="center" mb={3}>
+            <Typography variant="h1" gutterBottom>
+              <Trans>login.title</Trans>
+            </Typography>
+          </Box>
+
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+              <CircularProgress size={50} />
+            </Box>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <Stack spacing={3}>
+                <Input
+                  label={<Trans>login.login</Trans>}
+                  tooltip={<Trans>REGEX.LOGIN</Trans>}
+                  regex="^[a-zA-Z0-9._-]{3,}$"
+                  entity={formEntities.login}
+                  onChange={(entity: any) =>
+                    setFormEntities((prev) => ({ ...prev, login: entity }))
+                  }
+                  icons={icons}
+                  require
+                  virgin
+                />
+
+                <Input
+                  label={<Trans>login.password</Trans>}
+                  tooltip={<Trans>REGEX.PASSWORD</Trans>}
+                  regex=".{6,}"
+                  type="password"
+                  entity={formEntities.password}
+                  onChange={(entity: any) =>
+                    setFormEntities((prev) => ({ ...prev, password: entity }))
+                  }
+                  icons={icons}
+                  require
+                  virgin
+                />
+
+                {error && (
+                  <Typography color="error" variant="body2">
+                    <Trans>login.{error}</Trans>
+                  </Typography>
+                )}
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  startIcon={icons.done}
+                  disabled={!(formEntities.login.valid && formEntities.password.valid)}
+                >
+                  <Trans>common.done</Trans>
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  startIcon={icons.key}
+                  disabled={!passkeyStored.user_code}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePasskeyLogin();
+                  }}
+                >
+                  <Trans>login.passkey</Trans>
+                </Button>
+              </Stack>
+            </form>
+          )}
+        </Paper>
       </motion.div>
     </Box>
   );
