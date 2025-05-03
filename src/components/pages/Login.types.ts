@@ -8,6 +8,8 @@ export interface LoginPageProps {
     help: ReactNode;
     done: ReactNode;
     key: ReactNode;
+    person: ReactNode;
+    lock: ReactNode;
   };
   services: {
     authUsecase: {

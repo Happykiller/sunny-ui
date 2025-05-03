@@ -1,5 +1,5 @@
 // src\services\logger\logger.service.real.ts
-import LoggerService from '@services/logger/logger.service';
+import LoggerService from './logger.service';
 
 export class LoggerServiceReal implements LoggerService {
   log(...args: any[]): void {

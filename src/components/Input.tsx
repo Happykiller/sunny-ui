@@ -20,6 +20,7 @@ interface InputProps extends Omit<TextFieldProps, 'onChange'> {
     value: string;
     valid: boolean;
   };
+  startIcon?: React.ReactNode;
   onChange?: (entity: { value: string; valid: boolean }) => void;
   require?: boolean;
   virgin?: boolean;
@@ -35,6 +36,7 @@ export const Input: React.FC<InputProps> = ({
   tooltip,
   regex,
   entity,
+  startIcon,
   onChange,
   require = false,
   virgin: virginProp = false,
@@ -87,6 +89,7 @@ export const Input: React.FC<InputProps> = ({
             onClick={() => setPassVisible((prev) => !prev)}
             edge="end"
             size="small"
+            sx={{ color: theme.palette.text.secondary }}
           >
             {passVisible ? icons.visibilityOff : icons.visibility}
           </IconButton>
@@ -97,7 +100,10 @@ export const Input: React.FC<InputProps> = ({
             TransitionComponent={Fade}
             TransitionProps={{ timeout: 300 }}
           >
-            <IconButton edge="end" size="small">
+            <IconButton
+              edge="end"
+              size="small"
+              sx={{ color: theme.palette.text.secondary }}>
               {icons.help}
             </IconButton>
           </Tooltip>
@@ -119,6 +125,14 @@ export const Input: React.FC<InputProps> = ({
       helperText={giveHelper()}
       onChange={handleChange}
       InputProps={{
+        startAdornment: startIcon ? (
+          <InputAdornment 
+            position="start"
+            sx={{ color: theme.palette.text.secondary }}
+          >
+            {startIcon}
+          </InputAdornment>
+        ) : undefined,
         endAdornment: renderEndAdornment(),
       }}
       sx={{
@@ -126,8 +140,8 @@ export const Input: React.FC<InputProps> = ({
           backgroundColor: theme.palette.background.paper,
           borderRadius: `${theme.shape.borderRadius}px`,
           transition: 'all 0.2s ease-in-out',
-          fieldset: {
-            borderColor: theme.palette.primary.main,
+          '& fieldset': {
+            borderColor: theme.palette.divider,
           },
           '&:hover fieldset': {
             borderColor: theme.palette.primary.light,
@@ -136,10 +150,13 @@ export const Input: React.FC<InputProps> = ({
             borderColor: theme.palette.primary.main,
             boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
           },
+          '&.Mui-error fieldset': {
+            borderColor: theme.palette.error.main,
+          },
         },
         input: {
           color: theme.palette.text.primary,
-          paddingY: 1.2,
+          py: 1.2,
         },
       }}
     />

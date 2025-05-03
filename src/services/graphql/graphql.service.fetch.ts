@@ -1,33 +1,50 @@
 // src\services\graphql\graphql.service.fetch.ts
-import GraphqlService from "@services/graphql/graphql.service";
+import GraphqlService from "./graphql.service";
+
+export interface GraphqlServiceConfig {
+  apiUrl: string;
+  storageName: string;
+}
 
 export class GraphqlServiceFetch implements GraphqlService {
-
   constructor(
-    private inversify:any
-  ){}
+    private inversify: any,
+    private config: GraphqlServiceConfig
+  ) {}
 
   async send(datas: any): Promise<any> {
     try {
-      const storage = JSON.parse(localStorage.getItem("vergo-storage")??"");
-      const token = storage?.state.access_token;
+      const storageRaw = localStorage.getItem(this.config.storageName);
+      let token: string | undefined;
 
-      const response = await fetch(process.env.API_URL+'/graphql', {
+      if (storageRaw) {
+        try {
+          const storage = JSON.parse(storageRaw);
+          token = storage?.state?.access_token;
+        } catch (err) {
+          this.inversify.loggerService.warn('GraphqlServiceFetch#send => Failed to parse localStorage');
+        }
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${this.config.apiUrl}/graphql`, {
         method: 'POST',
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token??'token'}`
-        },
-        body: JSON.stringify(datas)
+        mode: 'cors',
+        cache: 'no-cache',
+        headers,
+        body: JSON.stringify(datas),
       });
 
-      const responseJson = response.json();
-
-      return responseJson;
-    } catch(e:any) {
-      this.inversify.loggerService.error(e.message);
+      return await response.json();
+    } catch (e: any) {
+      this.inversify.loggerService.error(`GraphqlServiceFetch#send => ${e.message}`);
     }
   }
-} 
+}

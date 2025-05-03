@@ -32,6 +32,7 @@ export const Login: React.FC<LoginPageProps> = ({
   const passkeyStored = usePasskeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const logoSrc = theme.palette.mode === 'dark' ? '/logo_dark.png' : '/logo_light.png';
 
   const [formEntities, setFormEntities] = React.useState({
     login: { value: '', valid: false },
@@ -170,7 +171,6 @@ export const Login: React.FC<LoginPageProps> = ({
                   width: 80,
                   height: 80,
                   borderRadius: `${theme.shape.borderRadius}px`,
-                  border: `1px solid ${theme.palette.primary.main}`,
                   boxShadow: `
                     0 0 24px ${theme.palette.primary.main}33,
                     0 0 64px ${theme.palette.primary.main}1A,
@@ -184,11 +184,11 @@ export const Login: React.FC<LoginPageProps> = ({
                 }}
               >
                 <img
-                  src="/logo4.png"
+                  src={logoSrc}
                   alt="Logo"
                   style={{
-                    maxWidth: '80%',
-                    maxHeight: '80%',
+                    maxWidth: '100%',
+                    maxHeight: '100%',
                     objectFit: 'contain',
                     display: 'block',
                   }}
@@ -213,6 +213,7 @@ export const Login: React.FC<LoginPageProps> = ({
                 <Input
                   label={<Trans>login.login</Trans>}
                   tooltip={<Trans>REGEX.LOGIN</Trans>}
+                  startIcon={icons.person}
                   regex="^[a-zA-Z0-9._-]{3,}$"
                   entity={formEntities.login}
                   onChange={(entity: any) =>
@@ -226,6 +227,7 @@ export const Login: React.FC<LoginPageProps> = ({
                 <Input
                   label={<Trans>login.password</Trans>}
                   tooltip={<Trans>REGEX.PASSWORD</Trans>}
+                  startIcon={icons.lock}
                   regex=".{6,}"
                   type="password"
                   entity={formEntities.password}
