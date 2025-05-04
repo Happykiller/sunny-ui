@@ -15,12 +15,13 @@
     "session_invalid": "Your session is invalid. Please log in again."
   },
   "footer": {
-    "issues": "Issues",
+    "email": "Send an email",
+    "front": "App version",
+    "back": "API version",
+    "issues": "Report a bug",
     "roadmap": "Roadmap",
-    "version": {
-      "back": "Apis: ",
-      "front": "Web: "
-    }
+    "cgu": "Terms of Use",
+    "toggle_theme": "Toggle theme"
   },
   "header": {
     "logout": "Logout",

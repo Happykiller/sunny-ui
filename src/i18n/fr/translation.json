@@ -15,12 +15,13 @@
     "session_invalid": "Votre session est invalide. Veuillez vous reconnecter."
   },
   "footer": {
-    "issues": "Problèmes",
+    "email": "Envoyer un email",
+    "front": "Version de l'application",
+    "back": "Version de l'API",
+    "issues": "Signaler un bug",
     "roadmap": "Feuille de route",
-    "version": {
-      "back": "Apis: ",
-      "front": "Web: "
-    }
+    "cgu": "Conditions générales d'utilisation",
+    "toggle_theme": "Changer de thème"
   },
   "header": {
     "logout": "Déconnexion",

@@ -8,6 +8,7 @@ import {
   Link,
   useTheme,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 
 export interface FooterProps {
@@ -21,9 +22,10 @@ export interface FooterProps {
     email?: React.ReactNode;
     issues?: React.ReactNode;
     roadmap?: React.ReactNode;
+    language?: React.ReactNode;
+    cloud?: React.ReactNode;
   };
   onToggleTheme?: () => void;
-  themeMode?: 'light' | 'dark';
   iconThemeToggle?: React.ReactNode;
 }
 
@@ -36,7 +38,6 @@ export const Footer: React.FC<FooterProps> = ({
   brandName,
   icons,
   onToggleTheme,
-  themeMode,
   iconThemeToggle,
 }) => {
   const [backVersion, setBackVersion] = useState<string>('common.loading');
@@ -97,49 +98,67 @@ export const Footer: React.FC<FooterProps> = ({
         flexWrap: 'wrap',
       }}
     >
-      <Typography variant="body2" component="span">{brandName}</Typography>
-
-      <Link href={`mailto:${mailto}`} underline="hover" sx={iconStyle}>{icons?.email}</Link>
-
       <Typography variant="body2" component="span">
-        <Trans>footer.version.front</Trans> {frontVersion}
+        {brandName}
       </Typography>
 
-      <Typography variant="body2" component="span">
-        <Trans>footer.version.back</Trans> <Trans>{backVersion}</Trans>
-      </Typography>
+      <Tooltip title={<Trans>footer.email</Trans>}>
+        <Link href={`mailto:${mailto}`} underline="hover" sx={iconStyle}>
+          {icons?.email}
+        </Link>
+      </Tooltip>
 
-      <Link href={issuesUrl} target="_blank" rel="noopener noreferrer" underline="hover" sx={iconStyle}>
-        {icons?.issues}
-      </Link>
+      <Tooltip title={<Trans>footer.front</Trans>}>
+        <Typography variant="body2" component="span" sx={iconStyle}>
+          {icons?.language} {frontVersion}
+        </Typography>
+      </Tooltip>
 
-      <Link href={projectUrl} target="_blank" rel="noopener noreferrer" underline="hover" sx={iconStyle}>
-        {icons?.roadmap}
-      </Link>
+      <Tooltip title={<Trans>footer.back</Trans>}>
+        <Typography variant="body2" component="span" sx={iconStyle}>
+          {icons?.cloud} {backVersion}
+        </Typography>
+      </Tooltip>
 
-      <Link
-        component={RouterLink}
-        to="/cgu"
-        target="_blank"
-        rel="noopener noreferrer"
-        underline="hover"
-      >
-        CGU
-      </Link>
+      <Tooltip title={<Trans>footer.issues</Trans>}>
+        <Link href={issuesUrl} target="_blank" rel="noopener noreferrer" underline="hover" sx={iconStyle}>
+          {icons?.issues}
+        </Link>
+      </Tooltip>
+
+      <Tooltip title={<Trans>footer.roadmap</Trans>}>
+        <Link href={projectUrl} target="_blank" rel="noopener noreferrer" underline="hover" sx={iconStyle}>
+          {icons?.roadmap}
+        </Link>
+      </Tooltip>
+
+      <Tooltip title={<Trans>footer.cgu</Trans>}>
+        <Link
+          component={RouterLink}
+          to="/cgu"
+          target="_blank"
+          rel="noopener noreferrer"
+          underline="hover"
+        >
+          CGU
+        </Link>
+      </Tooltip>
 
       {onToggleTheme && iconThemeToggle && (
-        <IconButton
-          onClick={onToggleTheme}
-          size="small"
-          sx={{
-            color: theme.palette.primary.main,
-            '&:hover': {
-              color: theme.palette.primary.light,
-            }
-          }}
-        >
-          {iconThemeToggle}
-        </IconButton>
+        <Tooltip title={<Trans>footer.toggle_theme</Trans>}>
+          <IconButton
+            onClick={onToggleTheme}
+            size="small"
+            sx={{
+              color: theme.palette.primary.main,
+              '&:hover': {
+                color: theme.palette.primary.light,
+              }
+            }}
+          >
+            {iconThemeToggle}
+          </IconButton>
+        </Tooltip>
       )}
     </Box>
   );
