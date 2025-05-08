@@ -81,14 +81,12 @@ export const Footer: React.FC<FooterProps> = ({
       component="footer"
       sx={{
         width: '100%',
-        position: 'fixed',
-        bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
+        position: 'relative',
         textAlign: 'center',
         fontSize: { xs: '8px', sm: '12px', md: '14px' },
         py: 0.5,
         px: 2,
+        mt: 2,
         color: theme.palette.text.secondary,
         zIndex: theme.zIndex.appBar - 1,
         display: 'flex',

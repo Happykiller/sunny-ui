@@ -1,13 +1,20 @@
-// src/components/Header.tsx
 import React from 'react';
 import {
-  AppBar, Avatar, Box, Button, Container, IconButton,
-  Menu, MenuItem, Toolbar, Tooltip, Typography
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useTheme,
 } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
-
-import './header.scss';
 
 export interface HeaderContextStore {
   code?: string | null | undefined;
@@ -43,6 +50,8 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const logoSrc = theme.palette.mode === 'dark' ? '/logo_dark.png' : '/logo_light.png';
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -60,7 +69,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleSettingClick = (setting: string) => {
     if (setting === 'logout') {
-      if (!contextStore.reset) console.warn('[Header] reset() is undefined');
       contextStore.reset?.();
       onLogout?.();
       navigate('/login');
@@ -72,15 +80,55 @@ export const Header: React.FC<HeaderProps> = ({
   if (volatileStore?.fullscreen) return null;
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#3C4042', ...sx }}>
+    <AppBar
+      position="sticky"
+      sx={{
+        top: 0,
+        zIndex: theme.zIndex.appBar,
+        background: theme.palette.background.default,
+        backgroundImage: theme.palette.gradient,
+        boxShadow: `
+          0 0 24px ${theme.palette.primary.main}33,
+          0 0 64px ${theme.palette.primary.main}1A,
+          inset 0 0 8px rgba(255, 255, 255, 0.02)
+        `,
+        borderBottom: `1px solid ${theme.palette.primary.main}`,
+        backdropFilter: 'blur(2px)',
+        ...sx,
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* Brand name desktop */}
-          <Typography variant="h6" noWrap sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/" className='sunny_header_title'>{brandName}</Link>
-          </Typography>
+          {/* Brand desktop */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                mr: 2,
+                borderRadius: `${theme.shape.borderRadius}px`,
+                overflow: 'hidden',
+                boxShadow: `0 0 12px ${theme.palette.primary.main}55`,
+                backgroundColor: theme.palette.background.default,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={logoSrc}
+                alt={brandName}
+                style={{
+                  maxWidth: '90%',
+                  maxHeight: '90%',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+            </Box>
+          </Link>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu icon */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -103,32 +151,64 @@ export const Header: React.FC<HeaderProps> = ({
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {routes.map((page) => (
-                <MenuItem key={page} onClick={() => { navigate(`/${page}`); handleCloseNavMenu(); }}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    navigate(`/${page}`);
+                    handleCloseNavMenu();
+                  }}
+                >
                   <Typography textAlign="center"><Trans>header.{page}</Trans></Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          {/* Brand name mobile */}
-          <Typography variant="h5" noWrap sx={{ mr: 2, display: { xs: 'flex', md: 'none' }, flexGrow: 1 }}>
-            <Link to="/" className='sunny_header_title'>{brandName}</Link>
+          {/* Brand mobile */}
+          <Typography
+            variant="h5"
+            noWrap
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'Montserrat',
+              fontWeight: 700,
+              letterSpacing: '0.2rem',
+              color: theme.palette.text.primary,
+              textDecoration: 'none',
+            }}
+            component={Link}
+            to="/"
+          >
+            {brandName}
           </Typography>
 
-          {/* Desktop menu */}
+          {/* Desktop navigation */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {routes.map((page) => (
               <Button
                 key={page}
                 onClick={() => navigate(`/${page}`)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                variant="text"
+                sx={{
+                  my: 1,
+                  mx: 1,
+                  fontWeight: 600,
+                  fontFamily: 'Montserrat',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    color: theme.palette.primary.light,
+                    backgroundColor: 'transparent',
+                  }
+                }}
               >
                 <Trans>header.{page}</Trans>
               </Button>
             ))}
           </Box>
 
-          {/* Avatar + settings */}
+          {/* User avatar + menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('header.settings')}>
               <IconButton
@@ -136,7 +216,17 @@ export const Header: React.FC<HeaderProps> = ({
                 sx={{ p: 0 }}
                 aria-label={t('header.open_user_menu')}
               >
-                <Avatar sx={{ backgroundColor: "#EA80FC" }} alt={contextStore.code ?? 'U'}>
+                <Avatar
+                  sx={{
+                    bgcolor: theme.palette.primary.main,
+                    color: '#fff',
+                    fontWeight: 600,
+                    fontFamily: 'Montserrat',
+                    border: `1px solid ${theme.palette.primary.light}`,
+                    boxShadow: `0 0 8px ${theme.palette.primary.main}55`
+                  }}
+                  alt={contextStore.code ?? 'U'}
+                >
                   {(contextStore.code ?? 'USR').substring(0, 3).toUpperCase()}
                 </Avatar>
               </IconButton>
@@ -152,7 +242,13 @@ export const Header: React.FC<HeaderProps> = ({
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={() => { handleSettingClick(setting); handleCloseUserMenu(); }}>
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    handleSettingClick(setting);
+                    handleCloseUserMenu();
+                  }}
+                >
                   <Typography textAlign="center"><Trans>header.{setting}</Trans></Typography>
                 </MenuItem>
               ))}
