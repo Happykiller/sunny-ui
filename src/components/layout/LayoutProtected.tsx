@@ -1,7 +1,7 @@
 // src/components/LayoutProtected.tsx
 import type { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Container, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { Guard } from '@components/Guard';
 
@@ -44,6 +44,13 @@ export function LayoutProtected({
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
+          background: theme.palette.background.default,
+          backgroundImage: `
+            radial-gradient(ellipse at 50% 0%, ${theme.palette.primary.main}40 0%, transparent 70%),
+            linear-gradient(135deg, ${theme.palette.background.default} 0%, #1B1F3B 100%)
+          `,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
         }}
       >
         {header}
@@ -52,23 +59,28 @@ export function LayoutProtected({
           component="main"
           sx={{
             flex: 1,
-            overflowY: 'auto',
-            px: { xs: 1, sm: 2 },
-            pt: 2,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <Box
+          <Container
+            maxWidth="lg"
             sx={{
-              width: '100%',
-              maxWidth: '100%',
               flex: 1,
-              px: { xs: 1, sm: 2 },
-              pt: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              px: { xs: 1, md: 4 },
+              py: { xs: 2, md: 4 },
             }}
-          >{children}</Box>
+          >
+            {children}
+          </Container>
         </Box>
 
-        {footer}
+        <Box component="footer">
+          {footer}
+        </Box>
       </Box>
     </Guard>
   );

@@ -86,7 +86,6 @@ export const Footer: React.FC<FooterProps> = ({
         fontSize: { xs: '8px', sm: '12px', md: '14px' },
         py: 0.5,
         px: 2,
-        mt: 2,
         color: theme.palette.text.secondary,
         zIndex: theme.zIndex.appBar - 1,
         display: 'flex',

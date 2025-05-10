@@ -100,33 +100,35 @@ export const Header: React.FC<HeaderProps> = ({
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Brand desktop */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                mr: 2,
-                borderRadius: `${theme.shape.borderRadius}px`,
-                overflow: 'hidden',
-                boxShadow: `0 0 12px ${theme.palette.primary.main}55`,
-                backgroundColor: theme.palette.background.default,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <img
-                src={logoSrc}
-                alt={brandName}
-                style={{
-                  maxWidth: '90%',
-                  maxHeight: '90%',
-                  objectFit: 'contain',
-                  display: 'block',
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  mr: 2,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  overflow: 'hidden',
+                  boxShadow: `0 0 12px ${theme.palette.primary.main}55`,
+                  backgroundColor: theme.palette.background.default,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-              />
-            </Box>
-          </Link>
+              >
+                <img
+                  src={logoSrc}
+                  alt={brandName}
+                  style={{
+                    maxWidth: '90%',
+                    maxHeight: '90%',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+            </Link>
+          </Box>
 
           {/* Mobile menu icon */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -165,24 +167,35 @@ export const Header: React.FC<HeaderProps> = ({
           </Box>
 
           {/* Brand mobile */}
-          <Typography
-            variant="h5"
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'Montserrat',
-              fontWeight: 700,
-              letterSpacing: '0.2rem',
-              color: theme.palette.text.primary,
-              textDecoration: 'none',
-            }}
-            component={Link}
-            to="/"
-          >
-            {brandName}
-          </Typography>
+          <Box sx={{ display: { flexGrow: 1, xs: 'flex', md: 'none' } }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  mr: 2,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  overflow: 'hidden',
+                  boxShadow: `0 0 12px ${theme.palette.primary.main}55`,
+                  backgroundColor: theme.palette.background.default,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <img
+                  src={logoSrc}
+                  alt={brandName}
+                  style={{
+                    maxWidth: '90%',
+                    maxHeight: '90%',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+            </Link>
+          </Box>
 
           {/* Desktop navigation */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
