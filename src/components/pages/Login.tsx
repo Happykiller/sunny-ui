@@ -125,18 +125,11 @@ export const Login: React.FC<LoginPageProps> = ({
   return (
     <Box
       sx={{
-        minHeight: '95vh',
+        flex: 1,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 4,
-        background: theme.palette.background.default,
-        backgroundImage: `
-        radial-gradient(ellipse at 50% 0%, ${theme.palette.primary.main}40 0%, transparent 70%),
-        linear-gradient(135deg, ${theme.palette.background.default} 0%, #1B1F3B 100%)
-      `,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
       }}
     >
       <motion.div

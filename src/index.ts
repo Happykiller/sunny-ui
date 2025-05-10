@@ -10,6 +10,7 @@ export { Input } from './components/Input';
 export { Footer } from './components/Footer';
 export { Header } from './components/Header';
 export { FlashMessage } from './components/FlashMessage';
+export { LayoutPublic } from './components/layout/LayoutPublic';
 export { LayoutProtected } from './components/layout/LayoutProtected';
 
 /**
