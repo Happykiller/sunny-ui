@@ -155,198 +155,185 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
   }, []);
 
   return (
-    <Box
+    <Paper
+      elevation={0}
       sx={{
-        minHeight: '93vh',
-        py: { xs: 3, sm: 6 },
-        px: { xs: 1, sm: 2 },
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-      }}
-    >
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          maxWidth: 1000,
-          p: { xs: 0, sm: 4 },
-          backgroundColor: { xs: 'transparent', sm: theme.palette.background.default },
-          boxShadow: {
-            xs: 'none',
-            sm: `0 0 24px ${theme.palette.primary.main}33,
+        p: { xs: 0, sm: 4 },
+        backgroundColor: { xs: 'transparent', sm: theme.palette.background.default },
+        boxShadow: {
+          xs: 'none',
+          sm: `0 0 24px ${theme.palette.primary.main}33,
            0 0 64px ${theme.palette.primary.main}1A,
            inset 0 0 8px rgba(255, 255, 255, 0.02)`,
-          },
-          border: {
-            xs: 'none',
-            sm: `1px solid ${theme.palette.primary.main}`,
-          },
-          borderRadius: `${theme.shape.borderRadius}px`,
-          backdropFilter: { xs: 'none', sm: 'blur(2px)' },
-        }}
-      >
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <Typography variant="h4" textAlign="center" mb={4}>
-            <Trans>profile.title</Trans>
-          </Typography>
+        },
+        border: {
+          xs: 'none',
+          sm: `1px solid ${theme.palette.primary.main}`,
+        },
+        borderRadius: `${theme.shape.borderRadius}px`,
+        backdropFilter: { xs: 'none', sm: 'blur(2px)' },
+      }}
+    >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <Typography variant="h3" textAlign="center" mb={4}>
+          <Trans>profile.title</Trans>
+        </Typography>
 
-          {/* User Info */}
-          <Grid2 container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-            <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
-              <Typography><Trans>profile.code</Trans> {context.code}</Typography>
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
-              <Typography><Trans>profile.name_first</Trans> {context.name_first}</Typography>
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
-              <Typography><Trans>profile.name_last</Trans> {context.name_last}</Typography>
-            </Grid2>
+        {/* User Info */}
+        <Grid2 container spacing={2} alignItems="center" justifyContent="center" mb={4}>
+          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+            <Typography><Trans>profile.code</Trans> {context.code}</Typography>
           </Grid2>
+          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+            <Typography><Trans>profile.name_first</Trans> {context.name_first}</Typography>
+          </Grid2>
+          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+            <Typography><Trans>profile.name_last</Trans> {context.name_last}</Typography>
+          </Grid2>
+        </Grid2>
 
-          {/* Password Section */}
-          <Divider sx={{ my: { xs: 2, sm: 4 } }}>
-            <Chip label={<Trans>profile.password</Trans>} />
-          </Divider>
+        {/* Password Section */}
+        <Divider sx={{ my: { xs: 2, sm: 4 } }}>
+          <Chip label={<Trans>profile.password</Trans>} />
+        </Divider>
 
-          {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-              <CircularProgress size={50} />
-            </Box>
-          ) : (
-            <form onSubmit={handlePasswordUpdate}>
-              <Grid2 container spacing={2}>
-                {['old', 'new', 'conf'].map((field, idx) => (
-                  <Grid2 key={field} size={{ xs: 12, sm: 4 }}>
-                    <Input
-                      label={<Trans>{`profile.${field}Password`}</Trans>}
-                      tooltip={<Trans>REGEX.PASSWORD</Trans>}
-                      regex=".{6,}"
-                      type="password"
-                      entity={formEntities[field as keyof typeof formEntities]}
-                      onChange={(entity: any) => setFormEntities(prev => ({ ...prev, [field]: entity }))}
-                      icons={icons}
-                      require
-                      virgin
-                    />
-                  </Grid2>
-                ))}
-                {error && (
-                  <Grid2 size={{ xs: 12 }}>
-                    <Typography color="error" textAlign="center"><Trans>profile.{error}</Trans></Typography>
-                  </Grid2>
-                )}
-                <Grid2 size={{ xs: 12 }} textAlign="center">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    startIcon={icons.done}
-                    disabled={!formIsValid}
-                  >
-                    <Trans>common.done</Trans>
-                  </Button>
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress size={50} />
+          </Box>
+        ) : (
+          <form onSubmit={handlePasswordUpdate}>
+            <Grid2 container spacing={2}>
+              {['old', 'new', 'conf'].map((field, idx) => (
+                <Grid2 key={field} size={{ xs: 12, sm: 4 }}>
+                  <Input
+                    label={<Trans>{`profile.${field}Password`}</Trans>}
+                    tooltip={<Trans>REGEX.PASSWORD</Trans>}
+                    regex=".{6,}"
+                    type="password"
+                    entity={formEntities[field as keyof typeof formEntities]}
+                    onChange={(entity: any) => setFormEntities(prev => ({ ...prev, [field]: entity }))}
+                    icons={icons}
+                    require
+                    virgin
+                  />
                 </Grid2>
+              ))}
+              {error && (
+                <Grid2 size={{ xs: 12 }}>
+                  <Typography color="error" textAlign="center"><Trans>profile.{error}</Trans></Typography>
+                </Grid2>
+              )}
+              <Grid2 size={{ xs: 12 }} textAlign="center">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  startIcon={icons.done}
+                  disabled={!formIsValid}
+                >
+                  <Trans>common.done</Trans>
+                </Button>
               </Grid2>
-            </form>
-          )}
+            </Grid2>
+          </form>
+        )}
 
-          {/* Volume Section */}
-          <Divider sx={{ my: { xs: 2, sm: 4 } }}>
-            <Chip label={<Trans>profile.settings</Trans>} />
-          </Divider>
+        {/* Volume Section */}
+        <Divider sx={{ my: { xs: 2, sm: 4 } }}>
+          <Chip label={<Trans>profile.settings</Trans>} />
+        </Divider>
 
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Typography variant="body1">
-              <Trans>profile.volumeControl</Trans>: {Math.round((context.volume ?? 1) * 100)}%
-            </Typography>
-            <Slider
-              value={context.volume ?? 1}
-              min={0}
-              max={1}
-              step={0.1}
-              onChange={(_, newValue) => contextStore.setState({ volume: newValue })}
-              valueLabelDisplay="auto"
-              sx={{ width: '80%', mt: 2 }}
-            />
-          </Box>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography variant="body1">
+            <Trans>profile.volumeControl</Trans>: {Math.round((context.volume ?? 1) * 100)}%
+          </Typography>
+          <Slider
+            value={context.volume ?? 1}
+            min={0}
+            max={1}
+            step={0.1}
+            onChange={(_, newValue) => contextStore.setState({ volume: newValue })}
+            valueLabelDisplay="auto"
+            sx={{ width: '80%', mt: 2 }}
+          />
+        </Box>
 
-          {/* Passkey Section */}
-          <Divider sx={{ my: { xs: 2, sm: 4 } }}>
-            <Chip label={<Trans>profile.passkeys</Trans>} />
-          </Divider>
+        {/* Passkey Section */}
+        <Divider sx={{ my: { xs: 2, sm: 4 } }}>
+          <Chip label={<Trans>profile.passkeys</Trans>} />
+        </Divider>
 
-          <Paper component="form" sx={{ display: 'flex', alignItems: 'center', p: 2, mb: 2 }}>
-            <Input
-              label={<Trans>profile.passkey_label</Trans>}
-              tooltip={<Trans>REGEX.PASSKEY_LABEL</Trans>}
-              regex=".{3,}"
-              entity={passkeyLabel}
-              onChange={(entity) => setPasskeyLabel(entity)}
-              icons={icons}
-              require
-              virgin
-            />
-            <Divider sx={{ height: 28, mx: 1 }} orientation="vertical" />
-            <IconButton
-              color="primary"
-              sx={{ p: '10px' }}
-              title={t('profile.add_passkey')}
-              disabled={!passkeyLabel.valid}
-              onClick={(e) => {
-                e.preventDefault();
-                handleAddPasskey();
-              }}
+        <Paper component="form" sx={{ display: 'flex', alignItems: 'center', p: 2, mb: 2 }}>
+          <Input
+            label={<Trans>profile.passkey_label</Trans>}
+            tooltip={<Trans>REGEX.PASSKEY_LABEL</Trans>}
+            regex=".{3,}"
+            entity={passkeyLabel}
+            onChange={(entity) => setPasskeyLabel(entity)}
+            icons={icons}
+            require
+            virgin
+          />
+          <Divider sx={{ height: 28, mx: 1 }} orientation="vertical" />
+          <IconButton
+            color="primary"
+            sx={{ p: '10px' }}
+            title={t('profile.add_passkey')}
+            disabled={!passkeyLabel.valid}
+            onClick={(e) => {
+              e.preventDefault();
+              handleAddPasskey();
+            }}
+          >
+            {icons.add}
+          </IconButton>
+        </Paper>
+
+        {loadingPasskeys ? (
+          <Box textAlign="center"><CircularProgress /></Box>
+        ) : errorPasskeys ? (
+          <Typography color="error" textAlign="center"><Trans>profile.passkey_list_error</Trans></Typography>
+        ) : passkeys.length === 0 ? (
+          <Typography textAlign="center"><Trans>profile.no_passkeys</Trans></Typography>
+        ) : (
+          passkeys.map((p) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              {icons.add}
-            </IconButton>
-          </Paper>
+              <Paper sx={{ p: 2, mb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography noWrap>{p.label}</Typography>
+                <Box>
+                  <IconButton title={t('profile.passkey.table.delete')} onClick={() => handleDeletePasskey(p.id)}>
+                    {icons.delete}
+                  </IconButton>
+                  <IconButton
+                    title={t('profile.passkey.table.active')}
+                    disabled={p.id === passkeyStored.passkey_id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleActivatePasskey(p);
+                    }}
+                  >
+                    <Box component="span" sx={{ color: p.id === passkeyStored.passkey_id ? 'green' : 'grey' }}>
+                      {icons.key}
+                    </Box>
+                  </IconButton>
+                </Box>
+              </Paper>
+            </motion.div>
+          ))
+        )}
 
-          {loadingPasskeys ? (
-            <Box textAlign="center"><CircularProgress /></Box>
-          ) : errorPasskeys ? (
-            <Typography color="error" textAlign="center"><Trans>profile.passkey_list_error</Trans></Typography>
-          ) : passkeys.length === 0 ? (
-            <Typography textAlign="center"><Trans>profile.no_passkeys</Trans></Typography>
-          ) : (
-            passkeys.map((p) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Paper sx={{ p: 2, mb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography noWrap>{p.label}</Typography>
-                  <Box>
-                    <IconButton title={t('profile.passkey.table.delete')} onClick={() => handleDeletePasskey(p.id)}>
-                      {icons.delete}
-                    </IconButton>
-                    <IconButton
-                      title={t('profile.passkey.table.active')}
-                      disabled={p.id === passkeyStored.passkey_id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleActivatePasskey(p);
-                      }}
-                    >
-                      <Box component="span" sx={{ color: p.id === passkeyStored.passkey_id ? 'green' : 'grey' }}>
-                        {icons.key}
-                      </Box>
-                    </IconButton>
-                  </Box>
-                </Paper>
-              </motion.div>
-            ))
-          )}
+        <Box textAlign="center" mt={2}>
+          <Link href="ms-settings:savedpasskeys" underline="hover">
+            <Trans>profile.keys</Trans>
+          </Link>
+        </Box>
 
-          <Box textAlign="center" mt={2}>
-            <Link href="ms-settings:savedpasskeys" underline="hover">
-              <Trans>profile.keys</Trans>
-            </Link>
-          </Box>
-
-        </motion.div>
-      </Paper>
-    </Box>
+      </motion.div>
+    </Paper>
   );
 };
