@@ -95,10 +95,11 @@ function App() {
 | Component         | Description                                                    |
 | :---------------- | :------------------------------------------------------------- |
 | `Guard`           | Route protection with session checking                         |
-| `Input`           | Flexible input field with validation, tooltip, password toggle |
+| [`Input`](./docs/components/Input.md)           | Flexible input field with validation, tooltip, password toggle |
 | `Footer`          | Versioned footer + useful links                                |
 | `Header`          | Fully responsive top navigation bar                            |
-| `FlashMessage`    | Global notifications (info, success, error, warning)           |
+| [`FlashMessage`](./docs/components/FlashMessage.md) | Global notifications (info, success, error, warning) |
+| `LayoutPublic` | Full page layout                                                  |
 | `LayoutProtected` | Full secure page layout                                        |
 
 ---
