@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { client } from '@passwordless-id/webauthn';
 import { Trans, useTranslation } from 'react-i18next';
 import { RegisterOptions, RegistrationJSON } from '@passwordless-id/webauthn/dist/esm/types';
-import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconButton, Paper, Link, Grid2, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconButton, Paper, Link, Grid, useTheme } from '@mui/material';
 
 import { Input } from '@components/Input';
 import { ProfilePageProps } from './Profile.types';
@@ -180,17 +180,17 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
         </Typography>
 
         {/* User Info */}
-        <Grid2 container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+        <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
+          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
             <Typography><Trans>profile.code</Trans> {context.code}</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
             <Typography><Trans>profile.name_first</Trans> {context.name_first}</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 4 }} textAlign="center">
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
             <Typography><Trans>profile.name_last</Trans> {context.name_last}</Typography>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
 
         {/* Password Section */}
         <Divider sx={{ my: { xs: 2, sm: 4 } }}>
@@ -203,9 +203,9 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
           </Box>
         ) : (
           <form onSubmit={handlePasswordUpdate}>
-            <Grid2 container spacing={2}>
+            <Grid container spacing={2}>
               {['old', 'new', 'conf'].map((field, idx) => (
-                <Grid2 key={field} size={{ xs: 12, sm: 4 }}>
+                <Grid key={field} size={{ xs: 12, sm: 4 }}>
                   <Input
                     label={<Trans>{`profile.${field}Password`}</Trans>}
                     tooltip={<Trans>REGEX.PASSWORD</Trans>}
@@ -217,14 +217,14 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
                     require
                     virgin
                   />
-                </Grid2>
+                </Grid>
               ))}
               {error && (
-                <Grid2 size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Typography color="error" textAlign="center"><Trans>profile.{error}</Trans></Typography>
-                </Grid2>
+                </Grid>
               )}
-              <Grid2 size={{ xs: 12 }} textAlign="center">
+              <Grid size={{ xs: 12 }} textAlign="center">
                 <Button
                   type="submit"
                   variant="contained"
@@ -233,8 +233,8 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
                 >
                   <Trans>common.done</Trans>
                 </Button>
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
           </form>
         )}
 
