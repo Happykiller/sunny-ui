@@ -6,18 +6,18 @@ export class LoggerServiceReal implements LoggerService {
   constructor(readonly config?: any) {}
 
   log(...args: any[]): void {
-    console.log(args);
+    console.log(...args);
   }
 
   debug(...args: any[]): void {
     if (this.config?.debug === 'true') {
-      console.debug(args);
+      console.debug(...args);
     }
   }
 
   error(...args: any[]): void {
     if (this.config?.debug === 'true') {
-      console.error(args);
+      console.error(...args);
     }
   }
-} 
+}
