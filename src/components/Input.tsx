@@ -57,6 +57,10 @@ export const Input: React.FC<InputProps> = ({
     </>
   );
 
+  React.useEffect(() => {
+    setState(entity);
+  }, [entity.value, entity.valid]);
+
   const calcValid = (value: string): boolean => {
     if (require && value.length === 0) return false;
     if (regex && value.length !== 0) {
@@ -126,7 +130,7 @@ export const Input: React.FC<InputProps> = ({
       onChange={handleChange}
       InputProps={{
         startAdornment: startIcon ? (
-          <InputAdornment 
+          <InputAdornment
             position="start"
             sx={{ color: theme.palette.text.secondary }}
           >
