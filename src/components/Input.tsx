@@ -29,6 +29,13 @@ interface InputProps extends Omit<TextFieldProps, 'onChange'> {
     visibilityOff?: React.ReactNode;
     help?: React.ReactNode;
   };
+  endActions?: {
+    icon: React.ReactNode;
+    title?: string;
+    onClick: () => void;
+    disabled?: boolean;
+    hide?: boolean;
+  }[];
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -42,6 +49,7 @@ export const Input: React.FC<InputProps> = ({
   virgin: virginProp = false,
   type = 'text',
   icons = {},
+  endActions = [],
   ...rest
 }) => {
   const theme = useTheme();
@@ -108,6 +116,21 @@ export const Input: React.FC<InputProps> = ({
             </IconButton>
           </Tooltip>
         )}
+        {endActions?.map((action, idx) =>
+        action.hide ? null : (
+          <Tooltip key={idx} title={action.title ?? ''}>
+            <IconButton
+              size="small"
+              edge="end"
+              onClick={action.onClick}
+              disabled={action.disabled}
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {action.icon}
+            </IconButton>
+          </Tooltip>
+        )
+      )}
       </Box>
     </InputAdornment>
   );
@@ -126,7 +149,7 @@ export const Input: React.FC<InputProps> = ({
       onChange={handleChange}
       InputProps={{
         startAdornment: startIcon ? (
-          <InputAdornment 
+          <InputAdornment
             position="start"
             sx={{ color: theme.palette.text.secondary }}
           >
