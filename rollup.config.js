@@ -4,7 +4,10 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
 import terser from '@rollup/plugin-terser';
-import pkg from './package.json' assert { type: 'json' };
+// `assert { type: 'json' }` a été retiré de Node 22 au profit de `with` : la
+// syntaxe d'origine faisait échouer le build sur « Unexpected identifier
+// 'assert' » avant même d'atteindre Rollup.
+import pkg from './package.json' with { type: 'json' };
 import json from '@rollup/plugin-json';
 
 export default {

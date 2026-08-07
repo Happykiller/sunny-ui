@@ -10,19 +10,20 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "npm run typecheck && rollup -c",
     "clean": "rm -rf dist",
     "build:link": "npm run clean && npm run build && npm link",
     "release:patch": "npm run clean && npm run build && npm version patch && npm publish --access public",
     "release:minor": "npm run clean && npm run build && npm version minor && npm publish --access public",
-    "release:major": "npm run clean && npm run build && npm version major && npm publish --access public"
+    "release:major": "npm run clean && npm run build && npm version major && npm publish --access public",
+    "typecheck": "tsc --noEmit"
   },
   "author": "fabrice.rosito@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/material": "^7.1.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^9.3.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
@@ -33,7 +34,7 @@
     "postcss": "^8.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "^15.5.2",
+    "react-i18next": "^17.0.11",
     "react-router-dom": "^7.6.1",
     "rollup": "^4.41.1",
     "rollup-plugin-postcss": "^4.0.2",
@@ -46,12 +47,12 @@
   "peerDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/material": "^7.1.0",
+    "@mui/material": "^7.1.0 || ^8.0.0 || ^9.0.0",
     "@passwordless-id/webauthn": "^2.3.0",
     "framer-motion": "^12.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-i18next": "^15.0.0",
+    "react-i18next": "^15.0.0 || ^16.0.0 || ^17.0.0",
     "react-router-dom": "^7.0.0",
     "zustand": "^5.0.0"
   }

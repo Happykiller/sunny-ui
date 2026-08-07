@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
         ...sx,
       }}
     >
-      <Container maxWidth="xl">
+      <Container sx={{ maxWidth: 'xl' }}>
         <Toolbar disableGutters>
           {/* Brand desktop */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -161,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
                     handleCloseNavMenu();
                   }}
                 >
-                  <Typography textAlign="center"><Trans>header.{page}</Trans></Typography>
+                  <Typography sx={{ textAlign: 'center' }}><Trans>header.{page}</Trans></Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -263,7 +263,7 @@ export const Header: React.FC<HeaderProps> = ({
                     handleCloseUserMenu();
                   }}
                 >
-                  <Typography textAlign="center"><Trans>header.{setting}</Trans></Typography>
+                  <Typography sx={{ textAlign: 'center' }}><Trans>header.{setting}</Trans></Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -32,17 +32,7 @@ export function LayoutPublic({ footer, children }: LayoutPublicProps) {
           flexDirection: 'column',
         }}
       >
-        <Container
-          maxWidth="sm"
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            px: { xs: 1, md: 4 },
-            py: { xs: 2, md: 4 },
-          }}
-        >
+        <Container sx={{ maxWidth: 'sm', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', px: { xs: 1, md: 4 }, py: { xs: 2, md: 4 } }}>
           {children}
         </Container>
       </Box>

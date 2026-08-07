@@ -175,19 +175,19 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
       }}
     >
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <Typography variant="h3" textAlign="center" mb={4}>
+        <Typography variant="h3" sx={{ textAlign: 'center', mb: 4 }}>
           <Trans>profile.title</Trans>
         </Typography>
 
         {/* User Info */}
-        <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
+        <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', mb: 4 }}>
+          <Grid size={{ xs: 12, sm: 4 }} sx={{ textAlign: 'center' }}>
             <Typography><Trans>profile.code</Trans> {context.code}</Typography>
           </Grid>
-          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
+          <Grid size={{ xs: 12, sm: 4 }} sx={{ textAlign: 'center' }}>
             <Typography><Trans>profile.name_first</Trans> {context.name_first}</Typography>
           </Grid>
-          <Grid size={{ xs: 12, sm: 4 }} textAlign="center">
+          <Grid size={{ xs: 12, sm: 4 }} sx={{ textAlign: 'center' }}>
             <Typography><Trans>profile.name_last</Trans> {context.name_last}</Typography>
           </Grid>
         </Grid>
@@ -198,7 +198,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
         </Divider>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
             <CircularProgress size={50} />
           </Box>
         ) : (
@@ -221,10 +221,10 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
               ))}
               {error && (
                 <Grid size={{ xs: 12 }}>
-                  <Typography color="error" textAlign="center"><Trans>profile.{error}</Trans></Typography>
+                  <Typography color="error" sx={{ textAlign: 'center' }}><Trans>profile.{error}</Trans></Typography>
                 </Grid>
               )}
-              <Grid size={{ xs: 12 }} textAlign="center">
+              <Grid size={{ xs: 12 }} sx={{ textAlign: 'center' }}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -243,7 +243,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
           <Chip label={<Trans>profile.settings</Trans>} />
         </Divider>
 
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Typography variant="body1">
             <Trans>profile.volumeControl</Trans>: {Math.round((context.volume ?? 1) * 100)}%
           </Typography>
@@ -290,11 +290,11 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
         </Paper>
 
         {loadingPasskeys ? (
-          <Box textAlign="center"><CircularProgress /></Box>
+          <Box sx={{ textAlign: 'center' }}><CircularProgress /></Box>
         ) : errorPasskeys ? (
-          <Typography color="error" textAlign="center"><Trans>profile.passkey_list_error</Trans></Typography>
+          <Typography color="error" sx={{ textAlign: 'center' }}><Trans>profile.passkey_list_error</Trans></Typography>
         ) : passkeys.length === 0 ? (
-          <Typography textAlign="center"><Trans>profile.no_passkeys</Trans></Typography>
+          <Typography sx={{ textAlign: 'center' }}><Trans>profile.no_passkeys</Trans></Typography>
         ) : (
           passkeys.map((p) => (
             <motion.div
@@ -327,7 +327,7 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
           ))
         )}
 
-        <Box textAlign="center" mt={2}>
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
           <Link href="ms-settings:savedpasskeys" underline="hover">
             <Trans>profile.keys</Trans>
           </Link>

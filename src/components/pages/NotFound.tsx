@@ -9,13 +9,15 @@ export const NotFound: React.FC = () => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-      textAlign="center"
-      px={2}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        textAlign: 'center',
+        px: 2,
+      }}
     >
       <Typography variant="h1" color="text.secondary" gutterBottom>
         404
@@ -23,7 +25,7 @@ export const NotFound: React.FC = () => {
       <Typography variant="h4" color="text.secondary" gutterBottom>
         <Trans>not_found.oups</Trans>
       </Typography>
-      <Typography variant="body1" color="text.secondary" mb={4}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
         <Trans>not_found.help</Trans>
       </Typography>
       <Button

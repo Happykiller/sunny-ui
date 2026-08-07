@@ -63,17 +63,7 @@ export function LayoutProtected({
             flexDirection: 'column',
           }}
         >
-          <Container
-            maxWidth="lg"
-            sx={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              px: { xs: 1, md: 4 },
-              py: { xs: 2, md: 4 },
-            }}
-          >
+          <Container sx={{ maxWidth: 'lg', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', px: { xs: 1, md: 4 }, py: { xs: 2, md: 4 } }}>
             {children}
           </Container>
         </Box>

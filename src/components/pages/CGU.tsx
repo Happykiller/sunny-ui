@@ -42,13 +42,13 @@ export const CGU: React.FC = () => {
   const { title, items } = cguContent[language] || cguContent['fr'];
 
   return (
-    <Box p={4} maxWidth="800px" mx="auto" className="scrollable-container">
+    <Box className="scrollable-container" sx={{ p: 4, maxWidth: '800px', mx: 'auto' }}>
       <Typography variant="h4" gutterBottom>
         {title}
       </Typography>
 
       {items.map((item, index) => (
-        <Box key={index} mb={3}>
+        <Box key={index} sx={{ mb: 3 }}>
           <Typography variant="h6" gutterBottom>
             {index + 1}. {item.title}
           </Typography>
@@ -58,7 +58,7 @@ export const CGU: React.FC = () => {
         </Box>
       ))}
 
-      <Box mt={6} display="flex" justifyContent="center">
+      <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
         <Button variant="contained" onClick={() => navigate('/')}>
           {language === 'fr' ? 'Retour à l\'accueil' : 'Back to Home'}
         </Button>

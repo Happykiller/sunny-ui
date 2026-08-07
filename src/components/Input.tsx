@@ -95,7 +95,7 @@ export const Input: React.FC<InputProps> = ({
 
   const renderEndAdornment = () => (
     <InputAdornment position="end">
-      <Box display="flex" alignItems="center" gap={0.5}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         {isPassword && (
           <IconButton
             onClick={() => setPassVisible((prev) => !prev)}
@@ -109,8 +109,8 @@ export const Input: React.FC<InputProps> = ({
         {tooltip && (
           <Tooltip
             title={tooltip}
-            TransitionComponent={Fade}
-            TransitionProps={{ timeout: 300 }}
+            slots={{ transition: Fade }}
+            slotProps={{ transition: { timeout: 300 } }}
           >
             <IconButton
               edge="end"
@@ -151,16 +151,18 @@ export const Input: React.FC<InputProps> = ({
       value={state.value}
       helperText={giveHelper()}
       onChange={handleChange}
-      InputProps={{
-        startAdornment: startIcon ? (
-          <InputAdornment
-            position="start"
-            sx={{ color: theme.palette.text.secondary }}
-          >
-            {startIcon}
-          </InputAdornment>
-        ) : undefined,
-        endAdornment: renderEndAdornment(),
+      slotProps={{
+        input: {
+          startAdornment: startIcon ? (
+            <InputAdornment
+              position="start"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {startIcon}
+            </InputAdornment>
+          ) : undefined,
+          endAdornment: renderEndAdornment(),
+        },
       }}
       sx={{
         '.MuiOutlinedInput-root': {

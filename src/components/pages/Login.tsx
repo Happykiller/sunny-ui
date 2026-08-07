@@ -158,7 +158,7 @@ export const Login: React.FC<LoginPageProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Box display="flex" justifyContent="center" mb={3}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
               <Box
                 sx={{
                   width: 80,
@@ -190,14 +190,14 @@ export const Login: React.FC<LoginPageProps> = ({
             </Box>
           </motion.div>
 
-          <Box textAlign="center" mb={3}>
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography variant="h1" gutterBottom>
               <Trans>login.title</Trans>
             </Typography>
           </Box>
 
           {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
               <CircularProgress size={50} />
             </Box>
           ) : (
