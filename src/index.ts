@@ -39,6 +39,8 @@ export { SystemInfoUsecaseModel } from './usecases/system/model/systemInfo.useca
 export { AuthUsecase } from './usecases/auth/auth.usecase';
 export { AuthPasskeyUsecase } from './usecases/passkey/auth/authPasskey.usecase';
 export { CreatePasskeyUsecase } from './usecases/passkey/create/createPasskey.usecase';
+export { PasskeyAuthOptionsUsecase } from './usecases/passkey/options/passkeyAuthOptions.usecase';
+export { PasskeyRegisterOptionsUsecase } from './usecases/passkey/options/passkeyRegisterOptions.usecase';
 export { DeletePasskeyUsecase } from './usecases/passkey/delete/deletePasskey.usecase';
 export { GetPasskeyForUserUsecase } from './usecases/passkey/getForUser/getPasskeyForUser.usecase';
 export { SessionInfoUsecase } from './usecases/sessionInfo/systemInfo.usecase';

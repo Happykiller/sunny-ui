@@ -18,6 +18,15 @@ export interface LoginPageProps {
     authPasskeyUsecase: {
       execute: (params: any) => Promise<any>;
     };
+    /** Amorce la cérémonie d'authentification : le challenge vient du serveur,
+     *  jamais du navigateur. */
+    passkeyAuthOptionsUsecase: {
+      execute: () => Promise<{
+        message: string;
+        data?: { challenge: string };
+        error?: string;
+      }>;
+    };
     loggerService: {
       log(...args: any[]): void;
       debug(...args: any[]): void;

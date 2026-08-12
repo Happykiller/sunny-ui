@@ -1,7 +1,7 @@
 // src/components/pages/Profile.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { client } from '@passwordless-id/webauthn';
+import { client, utils } from '@passwordless-id/webauthn';
 import { Trans, useTranslation } from 'react-i18next';
 import { RegisterOptions, RegistrationJSON } from '@passwordless-id/webauthn/dist/esm/types';
 import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconButton, Paper, Link, Grid, useTheme } from '@mui/material';
@@ -9,14 +9,12 @@ import { Box, Button, CircularProgress, Typography, Divider, Chip, Slider, IconB
 import { Input } from '@components/Input';
 import { ProfilePageProps } from './Profile.types';
 import { useFlashStore } from '@hooks/useFlashStore';
-import { usePasskeyStore } from '@hooks/usePasskeyStore';
 
 export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextStore }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const context = contextStore();
   const flashStore = useFlashStore();
-  const passkeyStored = usePasskeyStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [formEntities, setFormEntities] = React.useState({ old: { value: '', valid: false }, new: { value: '', valid: false }, conf: { value: '', valid: false } });
@@ -72,7 +70,19 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
 
   const handleAddPasskey = async () => {
     try {
-      const challenge = crypto.randomUUID();
+      /**
+       * Le serveur émet le challenge — qui ne sert qu'une fois — et donne le
+       * `user_handle` du compte. Ces deux valeurs venaient du navigateur : le
+       * challenge était donc vérifié contre lui-même, et le handle changeait à
+       * chaque clé, si bien qu'aucune assertion ne permettait de remonter au
+       * compte.
+       */
+      const options = await services.passkeyRegisterOptionsUsecase.execute();
+      if (options.message !== 'SUCCESS' || !options.data) {
+        throw new Error(options.error ?? options.message);
+      }
+      const { challenge, user_handle, exclude_credentials } = options.data;
+
       const formattedDate = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
       const passkey_display = `${context.code} (${passkeyLabel.value} - ${formattedDate})`;
 
@@ -80,12 +90,50 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
        * Ask device passkey auth
        */
       const registerOptions: RegisterOptions = {
-        user: passkey_display,
+        /**
+         * `id` stable et opaque : c'est lui que l'authentificateur renverra en
+         * `userHandle`, et sous lequel le gestionnaire de mots de passe range
+         * le compte. Passer une simple chaîne laissait la bibliothèque en
+         * inventer un nouveau à chaque enregistrement.
+         */
+        user: {
+          id: user_handle,
+          name: context.code,
+          displayName: passkey_display,
+        },
         challenge: challenge,
         userVerification: "required",
-        discoverable: "preferred",
+        /**
+         * `required` et non `preferred` : une passkey synchronisée est
+         * nécessairement découvrable, et c'est la découvrabilité qui permet de
+         * se connecter depuis un poste qui ne connaît pas encore le compte. En
+         * `preferred`, l'authentificateur restait libre de créer une credential
+         * que le navigateur ne proposerait jamais de lui-même.
+         */
+        discoverable: "required",
         timeout: 60000,
-        attestation: true,
+        /**
+         * L'attestation n'était pas exploitée à la vérification, et les
+         * recommandations passkeys.dev déconseillent de la demander : elle
+         * ajoute de la friction sans rien apporter ici.
+         */
+        attestation: false,
+        ...(exclude_credentials.length > 0 && {
+          // Sans cette liste, relancer l'enregistrement chez le même
+          // fournisseur y empile des clés en double, toutes valides et
+          // indiscernables pour l'utilisateur.
+          customProperties: {
+            // `customProperties` est fusionné tel quel dans les options
+            // WebAuthn : l'identifiant doit donc être un BufferSource, pas la
+            // chaîne base64url que suggère l'exemple de la bibliothèque. Passée
+            // en chaîne, la cérémonie échoue avant même d'atteindre
+            // l'authentificateur.
+            excludeCredentials: exclude_credentials.map((id) => ({
+              id: utils.parseBase64url(id),
+              type: 'public-key',
+            })),
+          },
+        }),
       }
       const registration: RegistrationJSON = await client.register(registerOptions);
 
@@ -102,17 +150,6 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
       const response = await services.createPasskeyUsecase.execute(data);
       if (response.message === 'SUCCESS') {
         flashStore.open(t('profile.passkey_created'));
-
-        /**
-         * Record local storage passkey
-         */
-        usePasskeyStore.setState({
-          display: passkey_display,
-          passkey_id: response.data.id,
-          user_code: context.code,
-          challenge: challenge,
-          credential_id: registration.id
-        });
 
         setPasskeyLabel({ value: '', valid: false });
         loadPasskeys();
@@ -138,16 +175,6 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
       flashStore.open(t('profile.passkey_delete_error'));
       services.loggerService.error(err);
     }
-  };
-
-  const handleActivatePasskey = (dto: any) => {
-    usePasskeyStore.setState({
-      passkey_id: dto.id,
-      user_code: dto.user_code,
-      challenge: dto.challenge,
-      credential_id: dto.credential_id
-    });
-    flashStore.open(t('profile.passkey_activated'));
   };
 
   React.useEffect(() => {
@@ -304,22 +331,27 @@ export const Profile: React.FC<ProfilePageProps> = ({ icons, services, contextSt
               transition={{ duration: 0.3 }}
             >
               <Paper sx={{ p: 2, mb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography noWrap>{p.label}</Typography>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography noWrap>{p.label}</Typography>
+                  {/*
+                    Le libellé seul ne dit plus rien d'utile : « PC du bureau »
+                    est trompeur quand la clé vit dans un gestionnaire
+                    synchronisé, et l'utilisateur ne peut pas deviner laquelle
+                    il perdrait avec son appareil. Ces deux informations
+                    viennent du relevé d'enregistrement — elles ne coûtent ni
+                    colonne ni appel supplémentaire.
+                  */}
+                  <Typography variant="caption" color="text.secondary" noWrap>
+                    {p.authenticator_name ?? t('profile.passkey.unknown_provider')}
+                    {' \u00b7 '}
+                    {p.synced
+                      ? t('profile.passkey.synced')
+                      : t('profile.passkey.device_only')}
+                  </Typography>
+                </Box>
                 <Box>
                   <IconButton title={t('profile.passkey.table.delete')} onClick={() => handleDeletePasskey(p.id)}>
                     {icons.delete}
-                  </IconButton>
-                  <IconButton
-                    title={t('profile.passkey.table.active')}
-                    disabled={p.id === passkeyStored.passkey_id}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleActivatePasskey(p);
-                    }}
-                  >
-                    <Box component="span" sx={{ color: p.id === passkeyStored.passkey_id ? 'green' : 'grey' }}>
-                      {icons.key}
-                    </Box>
                   </IconButton>
                 </Box>
               </Paper>

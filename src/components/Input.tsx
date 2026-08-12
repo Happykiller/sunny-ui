@@ -141,9 +141,14 @@ export const Input: React.FC<InputProps> = ({
 
   return (
     <TextField
+      // `autoComplete` est posé AVANT le spread pour que l'appelant puisse le
+      // remplacer : l'autofill des passkeys (conditional UI) exige la valeur
+      // `username webauthn` sur le champ identifiant, et un défaut écrit après
+      // le spread la rendrait inatteignable — en silence, comme le fait
+      // `variant` juste en dessous.
+      autoComplete="off"
       {...rest}
       fullWidth
-      autoComplete="off"
       variant="outlined"
       label={fullLabel}
       type={isPassword ? (passVisible ? 'text' : 'password') : type}

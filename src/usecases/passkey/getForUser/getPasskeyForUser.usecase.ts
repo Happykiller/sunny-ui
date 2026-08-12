@@ -21,8 +21,9 @@ export class GetPasskeyForUserUsecase {
               user_id
               hostname
               user_code
-              challenge
               credential_id
+              authenticator_name
+              synced
             }
           }`
         }
