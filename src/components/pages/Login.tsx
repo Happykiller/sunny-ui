@@ -115,16 +115,32 @@ export const Login: React.FC<LoginPageProps> = ({
   };
 
   /**
+   * Un `message` d'exception ne fait une clé de traduction que s'il en a la forme.
+   * Les erreurs que nous levons nous-mêmes portent un code court
+   * (`authentication_failed`, `passkey_failed`) ; celles du navigateur portent une
+   * phrase anglaise — « Resident credentials or empty 'allowCredentials' lists are
+   * not supported at this time. » — que i18next ne peut pas résoudre et réaffiche
+   * donc telle quelle, préfixée de `login.`. D'où ce filtre sur la forme.
+   */
+  const estCodeDeTraduction = (valeur: unknown): valeur is string =>
+    typeof valeur === 'string' && /^[A-Za-z0-9_]+$/.test(valeur);
+
+  /**
    * Une annulation n'est pas une panne : l'utilisateur qui ferme le sélecteur
    * de son gestionnaire (`NotAllowedError`) comme l'appel conditionnel que nous
-   * interrompons nous-mêmes (`AbortError`) ne méritent aucun message. Les
-   * autres, si — et sous une clé de traduction qui existe, faute de quoi
-   * l'écran affichait le nom brut de l'exception.
+   * interrompons nous-mêmes (`AbortError`) ne méritent aucun message.
+   *
+   * `silencieux` couvre l'autofill : cette cérémonie démarre toute seule à
+   * l'affichage de l'écran, sans que personne l'ait demandée. Son échec ne
+   * regarde que les logs — sinon un navigateur qui annonce savoir faire
+   * l'autofill sans y parvenir accueille l'utilisateur par une erreur rouge
+   * pour un mécanisme qu'il n'a pas sollicité.
    */
-  const signalerEchec = (e: any) => {
+  const signalerEchec = (e: any, options: { silencieux?: boolean } = {}) => {
     services.loggerService.error(e?.message || e);
     if (e?.name === 'AbortError' || e?.name === 'NotAllowedError') return;
-    const cle = typeof e?.message === 'string' ? e.message : 'passkey_failed';
+    if (options.silencieux) return;
+    const cle = estCodeDeTraduction(e?.message) ? e.message : 'passkey_failed';
     flash.open(t(`login.${cle}`));
     setError(cle);
   };
@@ -186,7 +202,7 @@ export const Login: React.FC<LoginPageProps> = ({
 
         await ouvrirSession(authentication);
       } catch (e: any) {
-        signalerEchec(e);
+        signalerEchec(e, { silencieux: true });
       }
     })();
 
