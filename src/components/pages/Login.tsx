@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { client } from '@passwordless-id/webauthn';
 import { Trans, useTranslation } from 'react-i18next';
 import { AuthenticationJSON, AuthenticateOptions } from '@passwordless-id/webauthn/dist/esm/types';
@@ -27,6 +27,24 @@ export const Login: React.FC<LoginPageProps> = ({
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  /**
+   * Où aller une fois la session ouverte.
+   *
+   * `Guard` dépose déjà la page demandée dans l'état de navigation lorsqu'il
+   * renvoie ici (`state.from`). L'ignorer ramenait systématiquement à l'accueil :
+   * tout lien profond perdait sa destination, et un parcours d'autorisation
+   * OAuth interrompu par une connexion perdait avec elle ses paramètres — donc
+   * échouait.
+   *
+   * Les deux chemins d'authentification, mot de passe et passkey, passent par
+   * ici : ils avaient tous deux la redirection codée en dur.
+   */
+  const allerADestination = () => {
+    const origine = (location.state as { from?: unknown } | null)?.from;
+    navigate((origine as never) ?? '/', { replace: true });
+  };
   const flash = useFlashStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -63,7 +81,7 @@ export const Login: React.FC<LoginPageProps> = ({
           name_first: response.data.name_first,
           name_last: response.data.name_last,
         });
-        navigate('/');
+        allerADestination();
       } else {
         services.loggerService.debug(response.error);
         setError(response.message);
@@ -108,7 +126,7 @@ export const Login: React.FC<LoginPageProps> = ({
         name_first: session.data.name_first,
         name_last: session.data.name_last,
       });
-      navigate('/');
+      allerADestination();
     } else {
       throw new Error(session.message);
     }
