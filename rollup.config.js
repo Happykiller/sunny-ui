@@ -44,7 +44,14 @@ export default {
         ['sass', { includePaths: ['./src', './node_modules'] }],
       ],
     }),
-    typescript({ tsconfig: './tsconfig.json' }),
+    // `include` explicite : le motif par défaut de rpt2 (`*.ts+(|x)`) repose sur un
+    // extglob que picomatch ne reconnaît plus depuis son correctif ReDoS
+    // (GHSA-c2c7-rcm5-vvqj) — les .ts arrivaient alors à Rollup non transpilés.
+    typescript({
+      tsconfig: './tsconfig.json',
+      include: ['*.ts', '**/*.ts', '*.tsx', '**/*.tsx'],
+      exclude: ['*.d.ts', '**/*.d.ts'],
+    }),
     terser({
       format: {
         comments: false,
